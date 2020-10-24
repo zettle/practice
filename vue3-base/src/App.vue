@@ -1,27 +1,28 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <h1>{{count}}</h1>
+  <p>{{double}}</p>
+  <button @click="add">add</button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
-
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-});
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+import { reactive, computed, toRefs } from 'vue';
+interface Tcount {
+  count: number;
+  double: number;
+  add: () => void;
 }
-</style>
+export default {
+  setup () {
+    const data: Tcount = reactive({
+      count: 0,
+      double: computed(() => data.count*2),
+      add: () => { console.log('add');data.count++}
+    });
+    const refData = toRefs(data);
+
+    return {
+      ...refData
+    }
+  }
+};
+</script>
