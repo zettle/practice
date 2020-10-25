@@ -195,3 +195,51 @@ person.name = 'xiaohong'; // 因为是引用，所以2个对象都改为xiaohong
 var {name} = person;
 name = '小哥'; // 脱离了引用赋值，所以这里的改变不会影响到原对象里面
 ```
+
+
+## vue3的生命周期
+从vue2迁到vue3的有: 
+* `beforeCreate()` --> `use setup()`
+* `created` --> `use setup()`
+* `beforeMount` --> `onBeforeMount`
+* `mounted` --> `onMounted`
+* `beforeUpdate` --> `onBeforeUpdate`
+* `updated` --> `onUpdated`
+* `beforeDestory` --> `onBeforeUnmount`
+* `destroyed` --> `onUnmounted`
+* `activated` --> `onActivated`
+* `deactivated` --> `onDeactivated`
+* `errorCaptured` --> `onErrorCaptured`
+
+vue3新增的有:
+* `onRenderTracked`: 调试用的构造函数，参数event，有新旧值的变化
+* `onRenderTriggered`: 调试用的构造函数，参数event，有事件的详细情况
+
+```js
+setup() {
+  onBeforeMount(() => {
+    console.log('About-onBeforeMount');
+  });
+  onMounted(() => {
+    console.log('About-onMounted');
+  });
+  onBeforeUpdate(() => {
+    console.log('About-onBeforeUpdate');
+  });
+  onUpdated(() => {
+    console.log('About-onUpdated');
+  });
+  onBeforeUnmount(() => {
+    console.log('About-onBeforeUnmount');
+  });
+  onUnmounted(() => {
+    console.log('About-onUnmounted');
+  });
+  onRenderTracked((event) => {
+    console.log('onRenderTracked', event);
+  });
+  onRenderTriggered(() => {
+    console.log('onRenderTriggered', event);
+  });
+}
+```
