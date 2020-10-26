@@ -243,3 +243,48 @@ setup() {
   });
 }
 ```
+
+
+## watch监听
+详情看`Watch.vue`
+
+监听一个响应式:
+```js
+watch(xxxx, (newVal, oldVal) => {
+  console.log('newVal', newVal);
+  console.log('oldVal', oldVal);
+})
+```
+监听必须是一个`/有返回值的函数/ref对象/响应式reactive对象/数组`，否则会提示
+```
+A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types. 
+```
+![](./readmeImg/watch-warn.png)
+
+```js
+// 监听一个ref对象
+const greeting = ref('');
+watch(greeting, (newVal, oldVal) => {
+  console.log(newVal, oldVal);
+});
+
+// 监听一个reactive对象
+const data = reactive({
+  count: 0
+});
+watch(data, (newVal, oldVal) => {
+  console.log(newVal, oldVal); // 这里返回的是一整个Proxy对象
+});
+
+// 监听一个函数的返回值
+watch(() => data.count, (newVal, oldVal) => {
+  console.log(newVal, oldVal);
+});
+
+// 监听数组
+watch([()=>data.count, greeting], (newVal, oldVal) => {
+  console.log(newVal, oldVal); // 返回一个数组，每个元素和监听的数组格式一样
+});
+```
+
+

@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
     <router-link to="/">数据变化</router-link> |
-    <router-link to="/about">生命周期</router-link>
+    <router-link to="/about">生命周期</router-link> | 
+    <router-link to="/watch">watch监听</router-link> | 
   </div>
   <router-view/>
 </template>
