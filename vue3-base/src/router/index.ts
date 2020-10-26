@@ -6,7 +6,9 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/about', component: () => import('../views/About.vue') },
     { path: '/about', component: () => import('../views/About.vue') },
     { path: '/watch', component: () => import('../views/Watch.vue') },
-    { path: '/hooks', component: () => import('../views/Hooks.vue') }
+    { path: '/hooks', component: () => import('../views/Hooks.vue') },
+    { path: '/hooksLoading', component: () => import('../views/HooksLoading.vue') },
+    { path: '/defineComponent', component: () => import('../views/DefineComponent.vue') },
 ]
 
 const router = createRouter({

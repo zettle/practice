@@ -6,21 +6,21 @@
 在vue2.0的时候，代码如下:
 ```js
 export default {
-data () {
-return {
-count: 0
-};
-},
-computed: {
-double () {
-return this.count * 2;
-}
-},
-method: {
-add () {
-this.count++;
-}
-}
+    data () {
+        return {
+            count: 0
+        };
+    },
+    computed: {
+        double () {
+            return this.count * 2;
+        }
+    },
+    method: {
+        add () {
+            this.count++;
+        }
+    }
 };
 ```
 
@@ -34,20 +34,20 @@ this.count++;
 ```js
 import { ref,computed } from 'vue';
 export default {
-setup () {
-const count = ref(0);
-const double = computed(() => count.value * 2);
+    setup () {
+        const count = ref(0);
+        const double = computed(() => count.value * 2);
 
-const add = () => {
-count.value++;
-};
+        const add = () => {
+            count.value++;
+        };
 
-return {
-count,
-double,
-add
-}
-}
+        return {
+            count,
+            double,
+            add
+        }
+    }
 };
 ```
 
@@ -56,11 +56,11 @@ add
 - 上面代码中，count和double太分散了，我们可以用reactive函数来包裹整个数据。然后改变数据的时候，不需要通过`xxx.value`去改变了，而是通过`data.xxx`去改变
 ```js
 setup () {
-const data = reactive({
-count: 0,
-double: computed(() => data.count*2),
-add: () => {data.count++}
-})
+    const data = reactive({
+        count: 0,
+        double: computed(() => data.count*2),
+        add: () => {data.count++}
+    })
 }
 ```
 在vue3中，reactive和computed一起使用的时候，有个缺陷，reactive会返回一个any类型，这个时候ts编译器会提示下面
@@ -78,25 +78,25 @@ add: () => {data.count++}
 解决这个有2种方法，一种是将data显性声明为any类型，这种失去了ts的意义
 ```js
 setup () {
-const data: any = reactive({
-count: 0,
-double: computed(() => data.count*2),
-add: () => {data.count++}
-})
+    const data: any = reactive({
+        count: 0,
+        double: computed(() => data.count*2),
+        add: () => {data.count++}
+    })
 }
 ```
 另外一种是为data声明一个interface，这样就可以让ts正确的推导
 ```js
 interface Tcount {
-count: number,
-double: number,
-add: () => void
+    count: number,
+    double: number,
+    add: () => void
 }
 
 const data: Tcount = reactive({
-count: 0,
-double: computed(() => data.count*2),
-add: () => {data.count++}
+    count: 0,
+    double: computed(() => data.count*2),
+    add: () => {data.count++}
 })
 ```
 推荐使用第2种
@@ -112,22 +112,20 @@ add: () => {data.count++}
 <script lang="ts">
 import { reactive, computed } from 'vue';
 interface Tcount {
-count: number;
-double: number;
-add: () => void;
+    count: number;
+    double: number;
+    add: () => void;
 }
 export default {
-setup () {
-const data: Tcount = reactive({
-count: 0,
-double: computed(() => data.count*2),
-add: () => {data.count++}
-})
+    setup () {
+        const data: Tcount = reactive({
+            count: 0,
+            double: computed(() => data.count*2),
+            add: () => {data.count++}
+        })
 
-return {
-data
-}
-}
+        return { data }
+    }
 };
 </script>
 ```
@@ -138,7 +136,7 @@ data
 为了优化，我们在return的时候改为`{...data}`，让数据直接return出去
 ```js
 return {
-...data
+    ...data
 }
 ```
 这个时候，发现数据可以正常渲染到页面上，但是点击按钮没有反应了，事件能够执行，但数据失去了响应式。
@@ -146,9 +144,9 @@ return {
 把es6的扩展改为普通的es5形式
 ```js
 return {
-count: data.count,
-double: data.double,
-add: data.add
+    count: data.count,
+    double: data.double,
+    add: data.add
 }
 ```
 借助vscode查看类型发现，`data.count`这些变成了普通了number类型。
@@ -165,23 +163,23 @@ add: data.add
 ```js
 import { reactive, computed, toRefs } from 'vue';
 interface Tcount {
-count: number;
-double: number;
-add: () => void;
+    count: number;
+    double: number;
+    add: () => void;
 }
 export default {
-setup () {
-const data: Tcount = reactive({
-count: 0,
-double: computed(() => data.count*2),
-add: () => { console.log('add');data.count++}
-});
-const refData = toRefs(data); // 这里再包裹一下
+    setup () {
+        const data: Tcount = reactive({
+            count: 0,
+            double: computed(() => data.count*2),
+            add: () => { console.log('add');data.count++}
+        });
+        const refData = toRefs(data); // 这里再包裹一下
 
-return {
-...refData
-}
-}
+        return {
+            ...refData
+        }
+    }
 };
 ```
 
@@ -217,45 +215,45 @@ vue3新增的有:
 
 ```js
 setup() {
-onBeforeMount(() => {
-console.log('About-onBeforeMount');
-});
-onMounted(() => {
-console.log('About-onMounted');
-});
-onBeforeUpdate(() => {
-console.log('About-onBeforeUpdate');
-});
-onUpdated(() => {
-console.log('About-onUpdated');
-});
-onBeforeUnmount(() => {
-console.log('About-onBeforeUnmount');
-});
-onUnmounted(() => {
-console.log('About-onUnmounted');
-});
-onRenderTracked((event) => {
-console.log('onRenderTracked', event);
-});
-onRenderTriggered(() => {
-console.log('onRenderTriggered', event);
-});
+    onBeforeMount(() => {
+        console.log('About-onBeforeMount');
+    });
+    onMounted(() => {
+        console.log('About-onMounted');
+    });
+    onBeforeUpdate(() => {
+        console.log('About-onBeforeUpdate');
+    });
+    onUpdated(() => {
+        console.log('About-onUpdated');
+    });
+    onBeforeUnmount(() => {
+        console.log('About-onBeforeUnmount');
+    });
+    onUnmounted(() => {
+        console.log('About-onUnmounted');
+    });
+    onRenderTracked((event) => {
+        console.log('onRenderTracked', event);
+    });
+    onRenderTriggered(() => {
+        console.log('onRenderTriggered', event);
+    });
 }
 ```
 
 
 ## watch监听
-详情看`Watch.vue`
+详情看 `Watch.vue`
 
 监听一个响应式:
 ```js
 watch(xxxx, (newVal, oldVal) => {
-console.log('newVal', newVal);
-console.log('oldVal', oldVal);
+    console.log('newVal', newVal);
+    console.log('oldVal', oldVal);
 })
 ```
-监听必须是一个`/有返回值的函数/ref对象/响应式reactive对象/数组`，否则会提示
+监听必须是一个 `/有返回值的函数/ref对象/响应式reactive对象/数组` ，否则会提示
 ```
 A watch source can only be a getter/effect function, a ref, a reactive object, or an array of these types. 
 ```
@@ -265,25 +263,25 @@ A watch source can only be a getter/effect function, a ref, a reactive object, o
 // 监听一个ref对象
 const greeting = ref('');
 watch(greeting, (newVal, oldVal) => {
-console.log(newVal, oldVal);
+    console.log(newVal, oldVal);
 });
 
 // 监听一个reactive对象
 const data = reactive({
-count: 0
+    count: 0
 });
 watch(data, (newVal, oldVal) => {
-console.log(newVal, oldVal); // 这里返回的是一整个Proxy对象
+    console.log(newVal, oldVal); // 这里返回的是一整个Proxy对象
 });
 
 // 监听一个函数的返回值
 watch(() => data.count, (newVal, oldVal) => {
-console.log(newVal, oldVal);
+    console.log(newVal, oldVal);
 });
 
 // 监听数组
 watch([()=>data.count, greeting], (newVal, oldVal) => {
-console.log(newVal, oldVal); // 返回一个数组，每个元素和监听的数组格式一样
+    console.log(newVal, oldVal); // 返回一个数组，每个元素和监听的数组格式一样
 });
 ```
 
@@ -296,7 +294,7 @@ console.log(newVal, oldVal); // 返回一个数组，每个元素和监听的数
 
 而在vue3中，组件代码的复用则主要使用hooks函数
 
-比如这么个场景，进入页面后，监听下用户的点击，页面展示用户点击的`x坐标/y坐标`
+比如这么个场景，进入页面后，监听下用户的点击，页面展示用户点击的 `x坐标/y坐标`
 
 在vue3代码如下:
 ```js
@@ -317,11 +315,11 @@ setup() {
     return { x, y };
 },
 ```
-点击获取`x坐标/y坐标`这块逻辑是可以复用的，我们封装起来以后方便其他组件使用。
+点击获取 `x坐标/y坐标` 这块逻辑是可以复用的，我们封装起来以后方便其他组件使用。
 
-1. 在`/src/hooks/useMousePosition.ts`。
+1. 在 `/src/hooks/useMousePosition.ts`。
 
-我们习惯hooks文件名以`useXXX.tx`开头。
+我们习惯hooks文件名以 `useXXX.tx` 开头。
 
 把上面的逻辑复制过去，内容如下:
 ```js
@@ -352,4 +350,62 @@ setup() {
     return { x, y };
 }
 ```
-这种方式比mixins好很多，看出`{x, y}`是从哪里来的。
+这种方式比mixins好很多，看出 `{x, y}` 是从哪里来的。
+
+
+
+## 代码复用hooks
+使用hooks封装一个场景，axios请求接口，请求前展示loading文字，请求后展示后台的数据
+
+代码: `HooksLoading.vue`
+```js
+function useURLLoader (api: string) {
+    const isLoading = ref(true);
+    const isLoaded = ref(false);
+    const result = ref(null);
+    const error = ref(null);
+
+    axios.post(api).then((rowData) => {
+        isLoading.value = false;
+        isLoaded.value = true;
+        console.log(rowData.data)
+        result.value = rowData.data;
+    }).catch(err => {
+        isLoading.value = false;
+        isLoaded.value = true;
+        error.value = err;
+    });
+    // 有响应式的，所以可以不用放在回调里面
+    return { isLoading, isLoaded, result, error };
+}
+
+export default useURLLoader;
+```
+
+
+
+## defineComponent
+defineComponent函数是为了ts而生，加上后可以给ts识别，能语法提示
+
+比如加上后，能自动推导出prop的类型
+
+代码: `DefineComponent.vue`
+
+```js
+export default defineComponent({
+    props: {
+        msg: String,
+        age: {
+            type: Number,
+            required: true
+        }
+    },
+    setup (props, context) {
+        console.log(props.msg); // 推导出msg为`string | undefined`
+        console.log(props.age); // 推导出age为`number`
+    }
+})
+```
+在vscode中，鼠标移动到 `props.msg` 上会自动提示msg的类型
+
+![](./readmeImg/props-define.png)

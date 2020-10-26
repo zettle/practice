@@ -4,6 +4,8 @@
         <router-link to="/about">生命周期</router-link> |
         <router-link to="/watch">watch监听</router-link> |
         <router-link to="/hooks">hooks代码复用</router-link> |
+        <router-link to="/hooksLoading">hooks-loading代码复用</router-link> |
+        <router-link to="/defineComponent">defineComponent函数</router-link> |
     </div>
     <router-view />
 </template>
