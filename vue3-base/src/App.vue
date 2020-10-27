@@ -8,6 +8,7 @@
         <router-link to="/defineComponent">defineComponent函数</router-link> |
         <router-link to="/teleport">teleport组件</router-link> |
         <router-link to="/modelDemo">teleport实现完整的弹窗</router-link> |
+        <router-link to="/suspensePromise">suspense组件</router-link> |
     </div>
     <div class="view">
         <router-view />

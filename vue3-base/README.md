@@ -466,3 +466,89 @@ emits: {
     }
 }
 ```
+
+
+
+## Suspense
+代码: `SuspensePromise.vue`
+
+在js中，有很多异步操作，比如ajax请求，有这么个场景，在ajax请求的过程中，展示loading，请求完后展示后台的数据。在以前我们通过组件切换来实现。
+
+而在vue3中，提供了 `<Suspense />` 给我们实现这种异步操作的场景。**如果使用Suspense。在setup中应该返回一个promise而不是一个对象**
+```html
+<Suspense>
+    <template #default>
+        <div>
+            <sync-show></sync-show>
+            <fetch-show></fetch-show>
+        </div>
+    </template>
+    <template #fallback>
+        loading....
+    </template>
+</Suspense>
+```
+- `#defaultdefault`: 请求成功后的界面
+- `#fallback`: 请求成功前的界面
+- `<Suspense />`: 会等到所有的promise成功后才展示内容
+
+如果想要监听异常，则可以使用 `onErrorCaptured` 钩子函数
+```js
+onErrorCaptured(ev => {
+    errInfo.value = ev;
+    return true; // 表示向上传递
+});
+```
+
+
+
+
+## 全局api的修改
+在vue2中，创建vue的代码经常如下
+```js
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+
+Vue.component();
+Vue.use();
+Vue.mixin();
+Vue.direction();
+new Vue({
+    store
+}).mount('#app')
+```
+在vue2中，大量的修改vue对象
+
+而在vue3中，则为下面
+```js
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+
+const app = createApp(App);
+app.use(store);
+app.use(router);
+app.mixin();
+app.component();
+app.mount('#app');
+```
+
+其他修改点
+- `config.productionTip` 被删除
+- `config.ignoredElements` 改名为 `config.isCustomElement`
+- `config.keyCodes` 被删除
+- `Vue.nextTick() | Vue.observalbe()` 为了配合tree-shaking，改下下面方式
+```js
+// vue2
+import Vue from 'vue';
+Vue.nextTick(() => {});
+const obj = Vue.observalbe({})
+
+// vue3
+import {nextTick, observalbe} from 'vue';
+nextTick(() => {});
+const obj = observalbe({})
+```

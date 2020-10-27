@@ -11,6 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/defineComponent', component: () => import('../views/DefineComponent.vue') },
     { path: '/teleport', component: () => import('../views/Teleport.vue') },
     { path: '/modelDemo', component: () => import('../views/ModelDemo.vue') },
+    { path: '/suspensePromise', component: () => import('../views/SuspensePromise.vue') },
 ]
 
 const router = createRouter({
