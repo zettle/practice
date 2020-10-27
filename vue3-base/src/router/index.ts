@@ -9,6 +9,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/hooks', component: () => import('../views/Hooks.vue') },
     { path: '/hooksLoading', component: () => import('../views/HooksLoading.vue') },
     { path: '/defineComponent', component: () => import('../views/DefineComponent.vue') },
+    { path: '/teleport', component: () => import('../views/Teleport.vue') },
+    { path: '/modelDemo', component: () => import('../views/ModelDemo.vue') },
 ]
 
 const router = createRouter({

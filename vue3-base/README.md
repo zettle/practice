@@ -409,3 +409,60 @@ export default defineComponent({
 在vscode中，鼠标移动到 `props.msg` 上会自动提示msg的类型
 
 ![](./readmeImg/props-define.png)
+
+`context`是一个对象，里面提供了3个属性给我们使用
+- `context.attrs`
+- `context.slots`
+- `context.emit`
+
+
+
+## Teleport
+意为“瞬移”。
+
+代码: `Teleport.vue`
+
+有这么个场景，在页面上要展示一个全局遮罩对话框让用户选择，那么就可能这么设计组件
+```html
+<div class="page">
+    <div class="com"></div>
+    <Dialog v-if="isShow"></Dialog>
+</div>
+```
+这种会造成这么个问题，渲染最终`<Dialog></Dialog>`会嵌套在页面组件内部，形成了父子结构，但是页面顶层组件是挂载在顶层DOM节点上的，`<Dialog>`变得非常深。
+
+这就比较尴尬，从用户感知来说，`<Dialog>`组件应该是一个比较独立的组件。
+
+![](./readmeImg/dialog.png)
+
+Teleport就是为了解决这种情况
+
+使用Teleport后，我们可以把组件挂载到指定的DOM上，而不必一定准守写代码时候组件的顺序
+
+![](./readmeImg/dialog-2.png)
+
+在封装`myDialog.vue`的时候，代码如下
+```html
+<!-- 表示渲染的时候，要挂载到id=modal的DOM上 -->
+<teleport to="#modal">
+    <div>
+        myDialog
+    </div>
+</teleport>
+```
+
+
+## emits
+代码: `ModelDemo.vue` 里面引用的 `myFullDialog.vue`
+
+在vue3中，有个新属性emits，用来校验我们将要广播出去的emit是否符合我们要求，符合才会真正的emit出去
+
+如果不想要校验，一个是可以不写，另外是可以设置为null
+
+```js
+emits: {
+    close: (playload: any) => {
+        return playload.type === 'close';
+    }
+}
+```

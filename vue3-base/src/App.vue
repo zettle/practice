@@ -6,8 +6,12 @@
         <router-link to="/hooks">hooks代码复用</router-link> |
         <router-link to="/hooksLoading">hooks-loading代码复用</router-link> |
         <router-link to="/defineComponent">defineComponent函数</router-link> |
+        <router-link to="/teleport">teleport组件</router-link> |
+        <router-link to="/modelDemo">teleport实现完整的弹窗</router-link> |
     </div>
-    <router-view />
+    <div class="view">
+        <router-view />
+    </div>
 </template>
 
 <style lang="scss">
@@ -21,6 +25,7 @@
 
 #nav {
     padding: 30px;
+    border-bottom: 1px solid red;
 
     a {
         font-weight: bold;
