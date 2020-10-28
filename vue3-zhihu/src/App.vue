@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <global-header></global-header>
+        <global-header :user="currentUser"></global-header>
 
         <router-view />
 
@@ -20,9 +20,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GlobalHeader from '@/components/GlobalHeader.vue';
-
+import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue';
+const currentUser: UserProps = {
+    isLogin: true,
+    name: 'xiaoming'
+};
 export default defineComponent({
-    components: { GlobalHeader }
+    components: { GlobalHeader },
+    setup () {
+        return { currentUser };
+    }
 });
 </script>

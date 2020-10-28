@@ -23,3 +23,13 @@ props: {
 }
 ```
 `PropType<T>`的作用是把构造函数断言为类型，这个在`vue@2`中也是存在的
+
+同样也适用在 Object 上，代码: `/src/components/GlobalHeader.vue`
+```js
+props: {
+    user: {
+        type: Object as PropType<UserProps>,
+        required: true
+    }
+}
+```

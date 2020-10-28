@@ -1,24 +1,45 @@
 <template>
     <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
         <router-link to="/" class="navbar-brand">者也专栏</router-link>
+        <!-- 已登录 -->
+        <ul v-if="user.isLogin" class="list-inline mb-0">
+            <li class="list-inline-item">
+                <span class="btn btn-outline-light my-2">{{user.name}}</span>
+            </li>
+        </ul>
+
         <!-- 未登录 -->
-        <!-- <ul class="list-inline mb-0">
+        <ul v-else class="list-inline mb-0">
             <li class="list-inline-item">
                 <router-link to="/login" class="btn btn-outline-light my-2">登陆</router-link>
             </li>
             <li class="list-inline-item">
                 <router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link>
             </li>
-        </ul> -->
-        <!-- 已登录 -->
+        </ul>
     </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 // import Dropdown from './Dropdown.vue';
 // import DropdownItem from './DropdownItem.vue';
+export interface UserProps {
+    isLogin: boolean; // 是否登录
+    name?: string;
+    id?: number;
+}
+
 export default defineComponent({
     // components: { Dropdown, DropdownItem }
+    props: {
+        user: {
+            type: Object as PropType<UserProps>,
+            required: true
+        }
+    },
+    setup (props) {
+        console.log(props.user);
+    }
 });
 </script>
