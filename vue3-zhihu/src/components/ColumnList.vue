@@ -1,9 +1,9 @@
 <template>
     <div class="row">
-        <div class="col-4 mb-4">
+        <div v-for="column in columnList" :key="column.id" class="col-4 mb-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
-                    <img class="rounded-circle border border-light my-3" src="http://jruat.midea.com/supplier/static/img/swiper-5.b720031.png" />
+                    <img class="rounded-circle border border-light my-3" :src="column.avatar" />
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text text-left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     <a href="#" class="btn btn-outline-primary">Go somewhere</a>
@@ -14,14 +14,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+// 类型声明
+export interface ColumnProps {
+    id: number;
+    title: string;
+    avatar?: string;
+    description: string;
+}
 export default defineComponent({
-    name: 'Home',
     props: {
-        name: String
+        list: {
+            type: Array as PropType<ColumnProps[]>,
+            required: true // 加了这个required后表示必传，ts会自动推导出不可能为undefined
+        }
     },
     setup (props) {
-        console.log(props.name);
+        const columnList = props.list.map(item => {
+            item.avatar = item.avatar ? item.avatar : require('@/assets/column.jpg');
+            return item;
+        });
+
+        return { columnList };
     }
 });
 </script>
