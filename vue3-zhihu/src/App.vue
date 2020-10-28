@@ -1,30 +1,28 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+    <div class="container">
+        <global-header></global-header>
+
+        <router-view />
+
+        <footer class="text-center py-4 text-secondary bg-light mt-6">
+            <small>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">© 2020 者也专栏</li>
+                    <li class="list-inline-item">课程</li>
+                    <li class="list-inline-item">文档</li>
+                    <li class="list-inline-item">联系</li>
+                    <li class="list-inline-item">更多</li>
+                </ul>
+            </small>
+        </footer>
+    </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import { defineComponent } from 'vue';
+import GlobalHeader from '@/components/GlobalHeader.vue';
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
+export default defineComponent({
+    components: { GlobalHeader }
+});
+</script>
