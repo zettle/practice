@@ -3,7 +3,12 @@
         <router-link to="/" class="navbar-brand">者也专栏</router-link>
         <!-- 已登录 -->
         <div v-if="user.isLogin" class="list-inline mb-0">
-            <dropdown :title="`您好，${user.name}`"></dropdown>
+            <dropdown :title="`您好，${user.name}`">
+                <dropdown-item>新建文章</dropdown-item>
+                <dropdown-item disabled>我的专栏</dropdown-item>
+                <dropdown-item>编辑资料</dropdown-item>
+                <dropdown-item>退出登陆</dropdown-item>
+            </dropdown>
         </div>
 
         <!-- 未登录 -->
@@ -21,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import Dropdown from './Dropdown.vue';
-// import DropdownItem from './DropdownItem.vue';
+import DropdownItem from './DropdownItem.vue';
 export interface UserProps {
     isLogin: boolean; // 是否登录
     name?: string;
@@ -29,7 +34,7 @@ export interface UserProps {
 }
 
 export default defineComponent({
-    components: { Dropdown },
+    components: { Dropdown, DropdownItem },
     props: {
         user: {
             type: Object as PropType<UserProps>,

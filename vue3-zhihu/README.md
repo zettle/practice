@@ -33,3 +33,29 @@ props: {
     }
 }
 ```
+
+
+- 2.2 refs获取DOM
+在vue@3中，refs获取指定DOM有新的方式
+```js
+// html
+<div ref="dropdown">123</div>
+
+// js
+setup () {
+    const dropdownRef = ref<null | HTMLElement>(null);
+    console.log(dropdownRef); // 此刻还是null
+    onMounted(() => {
+        console.log(dropdownRef.value); // 在挂载后，通过 `xx.value` 可以获取到DOM
+    });
+    return { dropdown: dropdownRef }; // 把这个return出去的赋值给html中的ref属性，vue会自动去获取
+}
+```
+因为 `setup()` 执行的时候，还没有挂载到DOM。
+
+所以在 `setup()` 函数里面是获取不到DOM的，此刻是null。等到挂载好了，vue会自动赋值给 `dropdownRef` 变量
+
+另外要注意点的是，`ref`和`Ref`是不同的，前者是一个函数，后者是一个类型声明
+```js
+const dropdownRef: Ref<null | HTMLElement> = ref<null | HTMLElement>(null);
+```
