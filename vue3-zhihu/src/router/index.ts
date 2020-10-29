@@ -6,12 +6,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/Home.vue')
     },
     {
-        path: '/login',
-        component: () => import('../views/Login.vue')
-    },
-    {
         path: '/register',
         component: () => import('../views/Register.vue')
+    },
+    {
+        path: '/login',
+        component: () => import('../views/Login.vue')
     },
     {
         path: '/createPost',
