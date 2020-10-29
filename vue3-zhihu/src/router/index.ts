@@ -24,6 +24,14 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/postDetail',
         component: () => import('../views/PostDetail.vue')
+    },
+    {
+        path: '/formRowSimple',
+        component: () => import('../views/FormRowSimple.vue')
+    },
+    {
+        path: '/formRowValid',
+        component: () => import('../views/FormRowValid.vue')
     }
 ];
 

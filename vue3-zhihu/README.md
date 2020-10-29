@@ -13,7 +13,7 @@ vue3练手项目
 
 
 ## 2、开发过程记录的知识点
-- 2.1 props遇到数组类型的时候
+### 2.1 props遇到数组类型的时候
 代码: `/src/components/ColumnList.vue`
 
 在props遇到数组的时候，需要用 `as PropType<T>` 来告诉ts该props的类型
@@ -35,7 +35,7 @@ props: {
 ```
 
 
-- 2.2 refs获取DOM
+### 2.2 refs获取DOM
 在vue@3中，refs获取指定DOM有新的方式
 ```js
 // html
@@ -59,3 +59,86 @@ setup () {
 ```js
 const dropdownRef: Ref<null | HTMLElement> = ref<null | HTMLElement>(null);
 ```
+
+
+### 2.3 表单校验的封装
+目的为了类似下面方便的用法
+```html
+<validate-input :rules=""></validate-input>
+
+interface RuleProp {
+    type: 'require' | 'email' | 'range' | ..
+    message: string;
+}
+```
+* type: 限定传递进来的只能是 `'require' | 'email' | 'range'` 等等这类字符串
+* message: 校验不通过提示的文字
+
+> 对于interface声明，我们可以多用type起别名
+```js
+// /src/components/ValidateInput.vue
+export interface RuleProp {
+    type: 'email' | 'required';
+    message: string;
+}
+export type RuleProps = RuleProp[];
+```
+在封装里面，我们遍历数组就可以知道有哪些规则，然后一个个规则校验，一旦有一个不满足就不继续校验了，这个借助 `Array.every()` 轻松实现
+
+> `Array.every()` 返回一个boolean型，会遍历元素，只要有1个不满足就直接返回false，剩余的不会执行
+
+代码位置: `/src/components/ValidateInput.vue`
+
+
+
+### 2.4 vue@3实现v-model
+在vue@2中，要实现自定义组件v-model，只需要传入`:value`，组件内`@emit('input')`
+```vue
+
+```
+而在 `vue@3` 提供了更加灵活的方式
+```html
+<validate-input v-model="emailRef.value"></validate-input>
+
+// js
+props: {
+    modelValue: String
+},
+setup (props, context) {
+    context.emit('update:modelValue', targetVal);
+}
+```
+
+
+### 2.5 非Prop的Attribute
+[vue2中关于非Prop的Attribute介绍](https://cn.vuejs.org/v2/guide/components-props.html)
+
+简单说就是对于自定义组件，我们可以写上任意的attribute，而写的attribute不在组件的props中，就成为非prop的attribute
+
+比如自定义组件 `<custom></custom>`
+```html
+// js props定义了name这个prop
+props {
+    name: String
+}
+
+// html name在prop声明的范围内，而age不在，所以age就成为非props的attribute
+<custom name="xioaming" age="23"></custom>
+```
+而这些非props的attribute，会默认集成到组件的跟节点上。
+
+如果不想要集成到跟节点上，给组件设置
+```js
+Vue.component('my-component', {
+    inheritAttrs: false, // 不继承
+    data () {}
+})
+```
+
+`$attr`获取的就是上面的非props的attribute
+
+而在 `/src/components/ValidateInput.vue` 上，我们就是用这种方式实现将外界传入的各种非props属性转移到`<input />`标签上
+
+
+
+### 2.6

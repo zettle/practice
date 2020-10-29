@@ -12,6 +12,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/teleport', component: () => import('../views/Teleport.vue') },
     { path: '/modelDemo', component: () => import('../views/ModelDemo.vue') },
     { path: '/suspensePromise', component: () => import('../views/SuspensePromise.vue') },
+    { path: '/test', component: () => import('../views/Test.vue') },
 ]
 
 const router = createRouter({

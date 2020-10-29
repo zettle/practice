@@ -9,6 +9,7 @@
         <router-link to="/teleport">teleport组件</router-link> |
         <router-link to="/modelDemo">teleport实现完整的弹窗</router-link> |
         <router-link to="/suspensePromise">suspense组件</router-link> |
+        <router-link to="/test">test</router-link> |
     </div>
     <div class="view">
         <router-view />

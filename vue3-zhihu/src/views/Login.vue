@@ -4,7 +4,8 @@
         <validate-form>
             <div class="mb-3">
                 <label class="form-label">邮箱地址</label>
-                <validate-input></validate-input>
+                <input v-model="emailRef.value" class="form-control" type="text" @blur="validateEmail">
+                <span v-if="emailRef.error" class="invalid-feedback">{{emailRef.message}}</span>
             </div>
             <div class="mb-3">
                 <label class="form-label">密码</label>
@@ -18,11 +19,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import ValidateForm from '@/components/ValidateForm.vue';
-import ValidateInput from '@/components/ValidateInput.vue';
+// import ValidateInput from '@/components/ValidateInput.vue';
 
 export default defineComponent({
-    components: { ValidateForm, ValidateInput }
+    components: { ValidateForm },
+    setup () {
+        const emailRef = reactive({
+            value: 'sdf',
+            message: '',
+            error: false
+        });
+
+        const myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/; // eslint-disable-line
+        const validateEmail = () => {
+            if (emailRef.value.trim() === '') {
+                emailRef.error = true;
+                emailRef.message = '邮箱不能为空';
+            } else if (!myreg.test(emailRef.value)) {
+                emailRef.error = true;
+                emailRef.message = '邮箱格式错误';
+            } else {
+                emailRef.error = false;
+                emailRef.message = '';
+            }
+        };
+
+        return { emailRef, validateEmail };
+    }
 });
 </script>
+
+<style lang="scss" scoped>
+.invalid-feedback {
+    display: block !important;
+}
+</style>
