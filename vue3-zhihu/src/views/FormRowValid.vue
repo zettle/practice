@@ -8,6 +8,12 @@
                 {{emailRef.value}}
                 <button @click="changeHander">改变</button>
             </div>
+            <div class="mb-3">
+                <label class="form-label">密码</label>
+                <validate-input v-model="emailRef.value" :rules="rules" type="haha"></validate-input>
+                {{emailRef.value}}
+                <button @click="changeHander">改变</button>
+            </div>
             <template #submit>
                 <button type="submit" class="btn btn-primary btn-block btn-large">登录</button>
             </template>

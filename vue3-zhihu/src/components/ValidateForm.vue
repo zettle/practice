@@ -12,7 +12,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onUnmounted } from 'vue';
+import mitt from 'mitt';
+export const emitter = mitt();
+// 声明
+type ValidateFunc = () => boolean;
 
 export default defineComponent({
     emits: {
@@ -22,8 +26,22 @@ export default defineComponent({
         }
     },
     setup (props, context) {
+        const funcArr: ValidateFunc[] = [];
+
+        const callback = (func?: ValidateFunc) => {
+            func && funcArr.push(func);
+        };
+        emitter.on('form-item-created', callback);
+
+        onUnmounted(() => {
+            emitter.off('form-item-created', callback); // 取消监听
+        });
+
         const submitForm = () => {
-            context.emit('form-submit', true);
+            // 先用map让所有校验走一遍，返回`[false,true]`这种格式
+            // 再用every遍历`[false,true]`看下是否都通过
+            const isAllValid = funcArr.map(fun => fun()).every(isOk => isOk);
+            context.emit('form-submit', isAllValid);
         };
 
         return { submitForm };

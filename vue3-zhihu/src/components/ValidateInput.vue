@@ -13,7 +13,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive } from 'vue';
+import { defineComponent, PropType, reactive, onMounted } from 'vue';
+import { emitter } from './ValidateForm.vue';
+
 // 类型声明
 export interface RuleProp {
     type: 'email' | 'required';
@@ -57,6 +59,7 @@ export default defineComponent({
                     return passed;
                 });
                 inputRef.error = !isAllRightRule;
+                return isAllRightRule;
             }
         };
 
@@ -66,6 +69,11 @@ export default defineComponent({
             inputRef.val = targetVal;
             context.emit('update:modelValue', targetVal);
         };
+
+        onMounted(() => {
+            emitter.emit('form-item-created', validateInput);
+        });
+
         return { inputRef, validateInput, inputHander };
     }
 });
