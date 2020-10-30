@@ -1,21 +1,27 @@
 <template>
     <div class="login-page mx-auto p-3 w-330">
         <h5 class="my-4 text-center">登录到者也</h5>
-        <div class="mb-3">
-            <label class="form-label">邮箱地址</label>
-            <validate-input v-model="emailRef.value" :rules="rules" type="haha"></validate-input>
-            {{emailRef.value}}
-            <button @click="changeHander">改变</button>
-        </div>
+        <validate-form @form-submit="formSubmitHandler">
+            <div class="mb-3">
+                <label class="form-label">邮箱地址</label>
+                <validate-input v-model="emailRef.value" :rules="rules" type="haha"></validate-input>
+                {{emailRef.value}}
+                <button @click="changeHander">改变</button>
+            </div>
+            <template #submit>
+                <button type="submit" class="btn btn-primary btn-block btn-large">登录</button>
+            </template>
+        </validate-form>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
+import ValidateForm from '@/components/ValidateForm.vue';
 import ValidateInput, { RuleProps } from '@/components/ValidateInput.vue';
 
 export default defineComponent({
-    components: { ValidateInput },
+    components: { ValidateForm, ValidateInput },
     setup () {
         // 未封装
         const emailRef = reactive({
@@ -46,7 +52,11 @@ export default defineComponent({
         const changeHander = () => {
             emailRef.value = '我是小红';
         };
-        return { emailRef, validateEmail, rules, changeHander };
+
+        const formSubmitHandler = (isValid: boolean) => {
+            console.log('page-', isValid);
+        };
+        return { emailRef, validateEmail, rules, changeHander, formSubmitHandler };
     }
 });
 </script>

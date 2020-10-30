@@ -141,4 +141,26 @@ Vue.component('my-component', {
 
 
 
-### 2.6
+### 2.6 显示emit出去的事件和参数
+在 vue@2 中我们随意 `$emit(事件, 参数)` 没有任何约束
+
+在 vue@3 中，我们可以在组件内，对该组件打算emit出去的事件和参数进行限制。通过`emits`属性控制
+
+代码位置: `/src/components/ValidateForm.vue`
+
+```js
+emits: {
+    formsubmit: (playload: boolean) => {
+        console.log(playload);
+        return true;
+    }
+}
+```
+上面代码，限制了组件内只能 emit 一个 fromsubmit 事件，参数是一个boolea值
+
+
+
+### 2.7 $on/$once/$off/$emit 被取消
+在vue@3中取消了这几个监听，如果要实现，需要自己去引用第3方库。
+
+vue@3中推荐了一个 `mitt` 的第3方库。安装`npm i -S mitt`，具体用法见[mitt](https://www.npmjs.com/package/mitt)
