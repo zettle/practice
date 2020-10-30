@@ -13,6 +13,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/modelDemo', component: () => import('../views/ModelDemo.vue') },
     { path: '/suspensePromise', component: () => import('../views/SuspensePromise.vue') },
     { path: '/test', component: () => import('../views/Test.vue') },
+    { path: '/mitt', component: () => import('../views/Mitt.vue') },
 ]
 
 const router = createRouter({

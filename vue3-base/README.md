@@ -505,7 +505,14 @@ onErrorCaptured(ev => {
 });
 ```
 
+## 去掉了事件总线
+在 vue@2 中，我们经常用 `const eventBus = new Vue()` 事件总线来跨组件通讯。
 
+在 vue@3 中，去掉了这个特性，官方推荐使用[mitt](https://www.npmjs.com/package/mitt)
+
+用法和 vue@2 的时候差不多
+
+代码位置: `/src/views/Mitt.vue`
 
 
 ## 全局api的修改
