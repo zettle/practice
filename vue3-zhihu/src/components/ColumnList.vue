@@ -6,7 +6,8 @@
                     <img class="rounded-circle border border-light my-3" :src="column.avatar" />
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text text-left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-outline-primary">Go somewhere</a>
+                    <!-- <router-link :to="`/columnDetail/${column.id}`" class="btn btn-outline-primary">详情</router-link> -->
+                    <router-link :to="{name: 'columnDetail', params: {id:column.id}, query: {name: 'xiaoming'}}" class="btn btn-outline-primary">详情</router-link>
                 </div>
             </div>
         </div>
@@ -15,13 +16,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-// 类型声明
-export interface ColumnProps {
-    id: number;
-    title: string;
-    avatar?: string;
-    description: string;
-}
+import { ColumnProps } from '@/testData';
+
 export default defineComponent({
     props: {
         list: {

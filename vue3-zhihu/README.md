@@ -164,3 +164,49 @@ emits: {
 在vue@3中取消了这几个监听，如果要实现，需要自己去引用第3方库。
 
 vue@3中推荐了一个 `mitt` 的第3方库。安装`npm i -S mitt`，具体用法见[mitt](https://www.npmjs.com/package/mitt)
+
+
+
+### 2.8 路由
+在 vue@2 中，我们获取路由上的 params/query 参数是通过 `this.$route` 获取的
+
+在 vue@3 中，不能用上面的方式获取了，vue-router提供了对应的hooks函数
+
+代码: `/src/views/ColumnDetail.vue`
+```js
+import { useRoute } from 'vue-router';
+
+setup () {
+    const route = useRoute();
+    console.log(route.query, route.params); // 获取
+}
+```
+
+代码: `/src/views/Home.vue`
+```js
+import { useRouter } from 'vue-router';
+setup () {
+    const router = useRouter();
+    router.push({ name: 'columnDetail', params: { id: 1 }, query: { name: 'xiaoming' } });
+}
+```
+
+
+### 2.9 vuex
+和 vue-router 一样，vuex也是改了
+
+代码: `/src/views/Home.vue`
+
+因为在getters中不支持外界传递参数进来，我们可以在getters返回一个函数，函数接收外界的数据
+```js
+getters: {
+    // 根据id获取栏目详情，id为外界传递进来的数据
+    getColumnById: (state) => {
+        return (id: number) => {
+            return state.columns.find(column => column.id === id);
+        };
+    }
+    // 上面可以简写
+    getColumnById: (state) => (id: number) => state.columns.find(column => column.id === id)
+},
+```

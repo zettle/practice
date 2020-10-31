@@ -2,25 +2,25 @@
     <div class="column-detail-page w-75 mx-auto">
         <div class="column-info row mb-4 border-bottom pb-4 align-items-center">
             <div class="col-3 text-center">
-                <img src="https://f11.baidu.com/it/u1=4170634177&u2=1663227958&fm=76" class="rounded-circle border w-100">
+                <img :src="column.avatar" class="rounded-circle border w-100">
             </div>
             <div class="col-9">
-                <h4>title</h4>
-                <p class="text-muted">description</p>
+                <h4>{{column.title}}</h4>
+                <p class="text-muted">{{column.description}}</p>
             </div>
         </div>
 
         <div class="post-list">
-            <article class="card mb-3 shadow-sm">
+            <article v-for="post of list" :key="post.id" class="card mb-3 shadow-sm">
                 <div class="card-body">
-                    <h4><router-link to="/">title</router-link></h4>
+                    <h4><router-link to="/">{{post.title}}</router-link></h4>
                     <div class="row my-3 align-items-center">
-                        <div class="col-4">
-                            <img src="https://f11.baidu.com/it/u1=4170634177&u2=1663227958&fm=76" class="rounded-lg w-100">
+                        <div v-if="post.image" class="col-4">
+                            <img :src="post.image" class="rounded-lg w-100">
                         </div>
-                        <p class="col-8 text-muted">excerpt</p>
+                        <p class="col-8 text-muted">{{post.excerpt}}</p>
                     </div>
-                    <span class="text-muted">createdAt</span>
+                    <span class="text-muted">{{post.createdAt}}</span>
                 </div>
             </article>
         </div>
@@ -28,9 +28,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
+import { GolbalDataProps } from '@/store';
 export default defineComponent({
-
+    setup () {
+        const route = useRoute();
+        const store = useStore<GolbalDataProps>();
+        // console.log(route.query, route.params);
+        const id = +route.params.id;
+        const list = computed(() => store.getters.getPostsById(id));
+        const column = computed(() => store.getters.getColumnById(id));
+        console.log(list);
+        return { column, list };
+    }
 });
 </script>
 

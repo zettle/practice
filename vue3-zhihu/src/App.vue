@@ -19,15 +19,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue';
-const currentUser: UserProps = {
-    isLogin: true,
-    name: 'xiaoming'
-};
+import { computed, defineComponent } from 'vue';
+import { useStore } from 'vuex';
+import { GolbalDataProps } from '@/store';
+import GlobalHeader from '@/components/GlobalHeader.vue';
 export default defineComponent({
     components: { GlobalHeader },
     setup () {
+        const store = useStore<GolbalDataProps>();
+
+        const currentUser = computed(() => store.state.user);
         return { currentUser };
     }
 });
