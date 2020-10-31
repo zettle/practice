@@ -451,6 +451,19 @@ Teleport就是为了解决这种情况
 </teleport>
 ```
 
+如果是封装自己第3方组件，我们提供给外面的人用，不能让人家每次都去修改index.html模板，所以我们可以在自己的loading等组件内。手动创建这个dom
+```
+setup () {
+    const node = document.createElement('div');
+    node.id = 'modal';
+    document.body.appendChild(node);
+
+    onUnmounted(() => {
+        document.body.removeChild(node);
+    });
+}   
+```
+
 
 ## emits
 代码: `ModelDemo.vue` 里面引用的 `myFullDialog.vue`

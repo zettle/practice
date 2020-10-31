@@ -10,13 +10,15 @@ export interface GolbalDataProps {
     columns: ColumnProps[];
     posts: PostProps[];
     user: UserProps;
+    isLoading: boolean;
 }
 
 const store = createStore<GolbalDataProps>({
     state: {
         columns: testData,
         posts: testPosts,
-        user: { isLogin: false }
+        user: { isLogin: false },
+        isLoading: false
     },
     getters: {
         // 获取栏目数量

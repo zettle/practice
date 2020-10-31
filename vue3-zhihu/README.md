@@ -210,3 +210,10 @@ getters: {
     getColumnById: (state) => (id: number) => state.columns.find(column => column.id === id)
 },
 ```
+
+
+
+### 2.9 loading.vue
+代码位置: `/src/components/Loading.vue`
+
+因Loading.vue组件内是使用瞬移组件，渲染到`id=back`的dom上，我们不能每次都让人去修改`/public/index.html`里面的。所以在Loading.vue里面自动创建这样的DOM，然后Loading.vue销毁的时候移除这个dom

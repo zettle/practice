@@ -17,7 +17,7 @@
                 <router-link to="/login" class="btn btn-outline-light my-2">登陆</router-link>
             </li>
             <li class="list-inline-item">
-                <router-link to="/signup" class="btn btn-outline-light my-2">注册</router-link>
+                <router-link to="/register" class="btn btn-outline-light my-2">注册</router-link>
             </li>
         </ul>
     </nav>

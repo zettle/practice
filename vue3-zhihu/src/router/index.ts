@@ -1,3 +1,4 @@
+import store from '@/store';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -11,11 +12,13 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/login',
-        component: () => import('../views/Login.vue')
+        component: () => import('../views/Login.vue'),
+        meta: { redirectIsLogin: true }
     },
     {
         path: '/createPost',
-        component: () => import('../views/CreatePost.vue')
+        component: () => import('../views/CreatePost.vue'),
+        meta: { requiredLogin: true }
     },
     {
         path: '/columnDetail/:id',
@@ -42,7 +45,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    next();
+    if (to.meta.requiredLogin && !store.state.user.isLogin) {
+        // 如果在meta声明了requiredLogin说明需要登录才可以访问，非登录的重定向登录页面
+        next('/login');
+    } else if (to.meta.redirectIsLogin && store.state.user.isLogin) {
+        // 如果在meta声明了redirectIsLogin说明登录不能访问该页面，将重定向到首页
+        next('/');
+    } else {
+        next();
+    }
 });
 
 export default router;

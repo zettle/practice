@@ -1,10 +1,11 @@
 <template>
     <div class="container">
+        <loading v-if="isLoading"></loading>
         <global-header :user="currentUser"></global-header>
 
         <router-view />
 
-        <footer class="text-center py-4 text-secondary bg-light mt-6">
+        <footer class="text-center py-4 text-secondary bg-light mt-6" @click="togggleLoading">
             <small>
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">© 2020 者也专栏</li>
@@ -23,13 +24,17 @@ import { computed, defineComponent } from 'vue';
 import { useStore } from 'vuex';
 import { GolbalDataProps } from '@/store';
 import GlobalHeader from '@/components/GlobalHeader.vue';
+import Loading from '@/components/Loading.vue';
+
 export default defineComponent({
-    components: { GlobalHeader },
+    components: { Loading, GlobalHeader },
     setup () {
         const store = useStore<GolbalDataProps>();
 
         const currentUser = computed(() => store.state.user);
-        return { currentUser };
+        const isLoading = computed(() => store.state.isLoading);
+
+        return { currentUser, isLoading };
     }
 });
 </script>
