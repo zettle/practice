@@ -42,10 +42,14 @@ export default defineComponent({
 
         const submitHander = async (isValid: boolean) => {
             if (!isValid) { return false; }
-            await store.dispatch('fetchLogin', { email: email.value, password: password.value });
-            // 登录成功，数据存vuex中
-            store.commit('login', { name: email.value, id: '90999' });
-            router.push('/');
+            const resp = await store.dispatch('fetchLogin', { email: email.value, password: password.value });
+            if (resp.data.code === 0) {
+                // 登录成功，数据存vuex中
+                store.commit('login', { name: email.value, id: '90999' });
+                router.push('/');
+            } else {
+                console.log('登录页面失败');
+            }
         };
 
         return { email, emialRules, password, passwordRules, submitHander };

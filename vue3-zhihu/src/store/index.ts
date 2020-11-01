@@ -13,10 +13,16 @@ export interface GolbalDataProps {
     user: UserProps;
     isLoading: boolean;
     token: string;
+    error: GlobalErrorProps;
+}
+export interface GlobalErrorProps {
+    status: boolean;
+    message?: string;
 }
 
 const store = createStore<GolbalDataProps>({
     state: {
+        error: { status: false },
         token: sessionStorage.getItem('token') || '',
         columns: [],
         posts: [],
@@ -46,8 +52,10 @@ const store = createStore<GolbalDataProps>({
             state.user = { isLogin: true, ...data };
         },
         setLoading (state, isShowLoading) {
-            console.log('111', isShowLoading);
             state.isLoading = isShowLoading;
+        },
+        setError (state, err: GlobalErrorProps) {
+            state.error = err;
         },
         fetchColumns (state, rowData) {
             state.columns = rowData.list;
@@ -84,13 +92,16 @@ const store = createStore<GolbalDataProps>({
         // 登录
         async fetchLogin ({ commit }, data) {
             const resp = await axios.post('login', data);
-            console.log(resp);
-            commit('saveToken', resp.data.data.token);
+            if (resp.data.code === 0) {
+                commit('saveToken', resp.data.data.token);
+            } else {
+                console.log('登录失败');
+            }
+            return resp;
         },
         // 获取当前用户信息
         async fetchCurrent () {
-            const resp = await axios.post('current/user');
-            console.log(resp);
+            await axios.post('current/user');
         }
     },
     modules: {

@@ -217,3 +217,44 @@ getters: {
 代码位置: `/src/components/Loading.vue`
 
 因Loading.vue组件内是使用瞬移组件，渲染到`id=back`的dom上，我们不能每次都让人去修改`/public/index.html`里面的。所以在Loading.vue里面自动创建这样的DOM，然后Loading.vue销毁的时候移除这个dom
+
+这个功能在很多组件需要用到，可以封装为一个hooks函数
+
+代码: `/src/hooks/useDOMCreate.ts`
+
+```js
+import { onUnmounted } from 'vue';
+function useDOMCreate (id: string) {
+    const node = document.createElement('div');
+    node.id = id;
+    document.body.appendChild(node);
+    onUnmounted(() => {
+        document.body.removeChild(node);
+    });
+}
+export default useDOMCreate;
+```
+
+
+### 2.9 Message.vue
+Message.vue演示了怎么将一个组件封装为一个函数组件，这样在页面上就可以通过函数调用直接展示这个组件了
+
+代码位置: `/src/components/createMessage.ts`
+
+封装的原理：
+- 使用`createapp(vueComponents, props)` 该函数接收2个参数，第1个参数是vue组件对象，第2个参数是传递给该组件对象的props属性
+```html
+const messageInstance = createApp(Message, {
+    message: 'this is message',
+    type: 'sucess'
+});
+// 相当于下面
+<message :message="'this is message'" :type="'sucess'"></message>
+```
+
+- 接着创建一个DOM做为容器，然后把上面的messageInstance挂载上去
+```js
+const mountNode = document.createElement('div');
+document.body.appendChild(mountNode);
+messageInstance.mount(mountNode);
+```

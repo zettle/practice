@@ -20,8 +20,7 @@ type ValidateFunc = () => boolean;
 
 export default defineComponent({
     emits: {
-        'form-submit': (playload: boolean) => {
-            console.log(playload);
+        'form-submit': (playload: boolean) => { // eslint-disable-line
             return true;
         }
     },

@@ -27,7 +27,6 @@ import { useStore } from 'vuex';
 import { GolbalDataProps } from '@/store';
 import GlobalHeader from '@/components/GlobalHeader.vue';
 import Loading from '@/components/Loading.vue';
-
 export default defineComponent({
     components: { Loading, GlobalHeader },
     setup () {

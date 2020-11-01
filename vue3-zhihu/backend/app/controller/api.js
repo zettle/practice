@@ -101,12 +101,21 @@ class HomeController extends Controller {
 
 
     async login () {
-        console.log('lll');
         const { ctx } = this;
         ctx.body = {
             code: 0,
             data: {
                 token: 'sddfjkwj23kwejjfsdkjf'
+            }
+        };
+    }
+
+    async user () {
+        const { ctx } = this;
+        ctx.body = {
+            code: 0,
+            data: {
+                name: '夏明'
             }
         };
     }
