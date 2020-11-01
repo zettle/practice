@@ -12,10 +12,12 @@ export interface GolbalDataProps {
     posts: PostProps[];
     user: UserProps;
     isLoading: boolean;
+    token: string;
 }
 
 const store = createStore<GolbalDataProps>({
     state: {
+        token: sessionStorage.getItem('token') || '',
         columns: [],
         posts: [],
         user: { isLogin: false },
@@ -55,6 +57,12 @@ const store = createStore<GolbalDataProps>({
         },
         fetchPosts (state, rowData) {
             state.posts = rowData.list;
+        },
+        saveToken (state, token) {
+            console.log('token', token);
+            state.token = token;
+            sessionStorage.setItem('token', token);
+            axios.defaults.headers.common.Authorization = `Bearer ${state.token}`;
         }
     },
     actions: {
@@ -72,6 +80,17 @@ const store = createStore<GolbalDataProps>({
         async fetchPosts ({ commit }, id) {
             const resp = await axios.get('posts', { params: { id } });
             commit('fetchPosts', resp.data.data);
+        },
+        // 登录
+        async fetchLogin ({ commit }, data) {
+            const resp = await axios.post('login', data);
+            console.log(resp);
+            commit('saveToken', resp.data.data.token);
+        },
+        // 获取当前用户信息
+        async fetchCurrent () {
+            const resp = await axios.post('current/user');
+            console.log(resp);
         }
     },
     modules: {

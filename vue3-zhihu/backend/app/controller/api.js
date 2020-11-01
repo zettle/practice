@@ -98,6 +98,18 @@ class HomeController extends Controller {
             }, 4000);
         });
     }
+
+
+    async login () {
+        console.log('lll');
+        const { ctx } = this;
+        ctx.body = {
+            code: 0,
+            data: {
+                token: 'sddfjkwj23kwejjfsdkjf'
+            }
+        };
+    }
 }
 
 module.exports = HomeController;

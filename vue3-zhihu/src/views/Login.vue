@@ -40,8 +40,9 @@ export default defineComponent({
             { type: 'required', message: '密码不能为空' }
         ];
 
-        const submitHander = (isValid: boolean) => {
+        const submitHander = async (isValid: boolean) => {
             if (!isValid) { return false; }
+            await store.dispatch('fetchLogin', { email: email.value, password: password.value });
             // 登录成功，数据存vuex中
             store.commit('login', { name: email.value, id: '90999' });
             router.push('/');

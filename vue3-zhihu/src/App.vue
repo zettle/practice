@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <pre>isLoading: {{isLoading}}</pre>
+        <pre>token: {{token}}</pre>
         <loading v-if="isLoading" text="拼命加载中..."></loading>
         <global-header :user="currentUser"></global-header>
 
@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
 import { computed, defineComponent } from 'vue';
 import { useStore } from 'vuex';
 import { GolbalDataProps } from '@/store';
@@ -34,8 +35,13 @@ export default defineComponent({
 
         const currentUser = computed(() => store.state.user);
         const isLoading = computed(() => store.state.isLoading);
+        const token = computed(() => store.state.token);
+        if (token.value) {
+            axios.defaults.headers.common.Authorization = `Bearer ${token.value}`;
+            store.dispatch('fetchCurrent');
+        }
 
-        return { currentUser, isLoading };
+        return { currentUser, isLoading, token };
     }
 });
 </script>
