@@ -5,7 +5,7 @@
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">loading</span>
                 </div>
-                <p class="text-primary small">text</p>
+                <p class="text-primary small">{{text}}</p>
             </div>
         </div>
     </teleport>
@@ -14,6 +14,9 @@
 <script lang="ts">
 import { defineComponent, onUnmounted } from 'vue';
 export default defineComponent({
+    props: {
+        text: String
+    },
     setup () {
         const node = document.createElement('div');
         node.id = 'back';

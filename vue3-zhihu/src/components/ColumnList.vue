@@ -4,7 +4,7 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
                     <img class="rounded-circle border border-light my-3" :src="column.avatar" />
-                    <h5 class="card-title">Card title</h5>
+                    <h5 class="card-title">{{column.title}}</h5>
                     <p class="card-text text-left">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     <!-- <router-link :to="`/columnDetail/${column.id}`" class="btn btn-outline-primary">详情</router-link> -->
                     <router-link :to="{name: 'columnDetail', params: {id:column.id}, query: {name: 'xiaoming'}}" class="btn btn-outline-primary">详情</router-link>
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { ColumnProps } from '@/testData';
 
 export default defineComponent({
@@ -26,9 +26,11 @@ export default defineComponent({
         }
     },
     setup (props) {
-        const columnList = props.list.map(item => {
-            item.avatar = item.avatar ? item.avatar : require('@/assets/column.jpg');
-            return item;
+        const columnList = computed(() => {
+            return props.list.map(item => {
+                item.avatar = item.avatar ? item.avatar : require('@/assets/column.jpg');
+                return item;
+            });
         });
 
         return { columnList };

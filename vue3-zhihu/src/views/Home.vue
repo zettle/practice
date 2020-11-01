@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { GolbalDataProps } from '@/store';
@@ -36,6 +36,10 @@ export default defineComponent({
         };
         const list = computed(() => store.state.columns);
         const len = computed(() => store.getters.getColumnLen);
+
+        onMounted(() => {
+            store.dispatch('fetchColumns');
+        });
         return { list, goAddArtilcePage, len };
     }
 });

@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        <loading v-if="isLoading"></loading>
+        <pre>isLoading: {{isLoading}}</pre>
+        <loading v-if="isLoading" text="拼命加载中..."></loading>
         <global-header :user="currentUser"></global-header>
 
         <router-view />

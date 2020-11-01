@@ -1,10 +1,19 @@
-const path = require('path');
+const path = require('path'); // // eslint-disable-line
 
 function resolve (dir) {
     return path.join(process.cwd(), dir); // 原来的cli2是在build里面，这里就不需要回退了
 }
 
 const vueConfig = {
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:7001/api',
+                changeOrigin: true,
+                pathRewrite: { '^/api': '' }
+            }
+        }
+    },
     chainWebpack: config => {
         config.resolve
             .alias // 别命名

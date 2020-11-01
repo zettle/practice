@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
-import { testData, testPosts, ColumnProps, PostProps } from '../testData';
+import axios from 'axios';
+import { ColumnProps, PostProps } from '../testData';
 // 类型声明
 export interface UserProps {
     isLogin: boolean; // 是否登录
@@ -15,8 +16,8 @@ export interface GolbalDataProps {
 
 const store = createStore<GolbalDataProps>({
     state: {
-        columns: testData,
-        posts: testPosts,
+        columns: [],
+        posts: [],
         user: { isLogin: false },
         isLoading: false
     },
@@ -41,9 +42,37 @@ const store = createStore<GolbalDataProps>({
     mutations: {
         login (state, data) {
             state.user = { isLogin: true, ...data };
+        },
+        setLoading (state, isShowLoading) {
+            console.log('111', isShowLoading);
+            state.isLoading = isShowLoading;
+        },
+        fetchColumns (state, rowData) {
+            state.columns = rowData.list;
+        },
+        fetchColumn (state, rowData) {
+            state.columns = [rowData];
+        },
+        fetchPosts (state, rowData) {
+            state.posts = rowData.list;
         }
     },
     actions: {
+        // 获取所有的栏目
+        async fetchColumns (context) {
+            const resp = await axios.get('columns', { params: { currentPage: 1, pageSize: 5 } });
+            context.commit('fetchColumns', resp.data.data);
+        },
+        // 获取当个的栏目
+        async fetchColumn ({ commit }, id) {
+            const resp = await axios.get('column', { params: { id } });
+            commit('fetchColumn', resp.data.data);
+        },
+        // 根据某个栏目，获取栏目下所有的评价
+        async fetchPosts ({ commit }, id) {
+            const resp = await axios.get('posts', { params: { id } });
+            commit('fetchPosts', resp.data.data);
+        }
     },
     modules: {
     }

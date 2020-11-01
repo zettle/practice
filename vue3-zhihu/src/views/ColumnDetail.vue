@@ -1,6 +1,6 @@
 <template>
     <div class="column-detail-page w-75 mx-auto">
-        <div class="column-info row mb-4 border-bottom pb-4 align-items-center">
+        <div v-if="column" class="column-info row mb-4 border-bottom pb-4 align-items-center">
             <div class="col-3 text-center">
                 <img :src="column.avatar" class="rounded-circle border w-100">
             </div>
@@ -9,7 +9,6 @@
                 <p class="text-muted">{{column.description}}</p>
             </div>
         </div>
-
         <div class="post-list">
             <article v-for="post of list" :key="post.id" class="card mb-3 shadow-sm">
                 <div class="card-body">
@@ -36,11 +35,16 @@ export default defineComponent({
     setup () {
         const route = useRoute();
         const store = useStore<GolbalDataProps>();
-        // console.log(route.query, route.params);
         const id = +route.params.id;
-        const list = computed(() => store.getters.getPostsById(id));
-        const column = computed(() => store.getters.getColumnById(id));
-        console.log(list);
+        // 从 `/src/testData.ts` 获取数据
+        // const list = computed(() => store.getters.getPostsById(id));
+        // const column = computed(() => store.getters.getColumnById(id));
+
+        // 从后台获取数据
+        const column = computed(() => store.state.columns[0]);
+        const list = computed(() => store.state.posts);
+        store.dispatch('fetchColumn', id);
+        store.dispatch('fetchPosts', id);
         return { column, list };
     }
 });
