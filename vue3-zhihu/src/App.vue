@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <pre>token: {{token}}</pre>
         <loading v-if="isLoading" text="拼命加载中..."></loading>
         <global-header :user="currentUser"></global-header>
 

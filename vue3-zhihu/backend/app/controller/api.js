@@ -119,6 +119,16 @@ class HomeController extends Controller {
             }
         };
     }
+
+    async upload () {
+        const { ctx } = this;
+        ctx.body = {
+            code: 0,
+            data: {
+                fildId: 'https://p5.ssl.qhimg.com/t01299b812d5bddfd28.png'
+            }
+        };
+    }
 }
 
 module.exports = HomeController;

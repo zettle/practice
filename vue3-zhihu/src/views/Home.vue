@@ -11,6 +11,11 @@
                 </div>
             </div>
         </section>
+        <uploader>
+            <template #uploaded>
+                shangchuan sucss
+            </template>
+        </uploader>
         <h4 class="font-weight-bold text-center">发现精彩</h4>
         <p>共{{len}}有个栏目</p>
         <column-list :list="list"></column-list>
@@ -25,14 +30,15 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { GolbalDataProps } from '@/store';
 import ColumnList from '@/components/ColumnList.vue';
+import Uploader from '@/components/Uploader.vue';
 
 export default defineComponent({
-    components: { ColumnList },
+    components: { ColumnList, Uploader },
     setup () {
         const router = useRouter();
         const store = useStore<GolbalDataProps>();
         const goAddArtilcePage = () => {
-            router.push({ name: 'columnDetail', params: { id: 1 }, query: { name: 'xiaoming' } });
+            router.push({ path: '/createPost' });
         };
         const list = computed(() => store.state.columns);
         const len = computed(() => store.getters.getColumnLen);
