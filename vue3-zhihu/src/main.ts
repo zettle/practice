@@ -24,8 +24,4 @@ axios.interceptors.response.use(config => {
     createMessage('请求异常');
     return Promise.reject(err);
 });
-
-// axios.get('columns', { params: { currentPage: 1, pageSize: 5 } }).then(resp => {
-//     console.log(resp.data);
-// });
 createApp(App).use(store).use(router).mount('#app');

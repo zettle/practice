@@ -12,5 +12,6 @@ module.exports = app => {
   router.get('/api/posts', controller.api.posts);
   router.post('/api/login', controller.api.login);
   router.post('/api/current/user', controller.api.user);
+  router.post('/api/upload', controller.api.upload);
 
 };

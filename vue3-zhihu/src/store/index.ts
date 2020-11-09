@@ -34,13 +34,6 @@ const store = createStore<GolbalDataProps>({
         getColumnLen (state) {
             return state.columns.length;
         },
-
-        // 根据id获取栏目详情
-        // getColumnById: (state) => {
-        //     return (id: number) => {
-        //         return state.columns.find(column => column.id === id);
-        //     };
-        // }
         // 上面可以简写
         getColumnById: (state) => (id: number) => state.columns.find(column => column.id === id),
 
@@ -67,10 +60,15 @@ const store = createStore<GolbalDataProps>({
             state.posts = rowData.list;
         },
         saveToken (state, token) {
-            console.log('token', token);
             state.token = token;
             sessionStorage.setItem('token', token);
             axios.defaults.headers.common.Authorization = `Bearer ${state.token}`;
+        },
+        setUser (state, userInfo) {
+            state.user = { isLogin: true, name: userInfo.data.name };
+        },
+        setUserLogin (state, isLogin) {
+            state.user = { isLogin };
         }
     },
     actions: {
@@ -100,8 +98,10 @@ const store = createStore<GolbalDataProps>({
             return resp;
         },
         // 获取当前用户信息
-        async fetchCurrent () {
-            await axios.post('current/user');
+        async fetchCurrent ({ commit }) {
+            commit('setUserLogin', true);
+            const resp = await axios.post('current/user');
+            commit('setUser', resp.data);
         }
     },
     modules: {

@@ -194,6 +194,18 @@ var {name} = person;
 name = '小哥'; // 脱离了引用赋值，所以这里的改变不会影响到原对象里面
 ```
 
+### 声明只能取值某些范围
+当我们想要限定变量的取值范围在我们指定的几个值里面，可以给ref传递一个泛型
+```js
+type UploadStatus = 'ready' | 'loading' | 'sucess' | 'error';
+
+setup () {
+    const fileStatus = ref<UploadStatus>('ready');
+    fileStatus.value = '234sdf'; // 不能，不在声明的范围内
+    fileStatus.value = 'loading'; // 可以
+}
+```
+
 
 ## vue3的生命周期
 从vue2迁到vue3的有: 

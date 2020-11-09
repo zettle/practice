@@ -258,3 +258,15 @@ const mountNode = document.createElement('div');
 document.body.appendChild(mountNode);
 messageInstance.mount(mountNode);
 ```
+
+
+### 2.10 限定只能取某些值
+```js
+type UploadStatus = 'ready' | 'loading' | 'sucess' | 'error';
+
+setup () {
+    const fileStatus = ref<UploadStatus>('ready');
+    fileStatus.value = '234sdf'; // 不能，不在声明的范围内
+    fileStatus.value = 'loading'; // 可以
+}
+```
