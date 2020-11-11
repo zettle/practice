@@ -388,6 +388,25 @@ onMounted(() => {
 ```
 > 上面的虽然在watchEffect里面拿到DOM了，但是执行顺序是`onBeforeMount -> wactchEffect -> onMounted`
 
+之后数据发生改变，会触发watchEffect，此时watchEffect触发时机是在DOM已经完成新的渲染之后
+```js
+<div id="box">{{count}}</div>
+
+watchEffect(() => {
+    console.log(document.getElementById('box').innerHTML); // 可以看出，每次改变count并且DOM数据已经更新了之后，才触发wacthEffect
+});
+```
+
+如果我们想要改变这个时机，可以通过第2个参数
+```js
+watchEffect(() => {
+    console.log(document.getElementById('box').innerHTML);
+}, { flush: 'pre' }); // pre 表示在DOM发生渲染前触发，获取的的DOM是渲染前的
+
+watchEffect(() => {
+    console.log(document.getElementById('box').innerHTML);
+}, { flush: 'sync' });  // sync 表示和DOM渲染同步进行，即发生渲染的那一刻触发，经过实验，获取的DOM也是旧的
+```
 
 
 
