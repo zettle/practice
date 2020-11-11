@@ -298,6 +298,98 @@ watch([()=>data.count, greeting], (newVal, oldVal) => {
 ```
 
 
+## watchEffect()
+在程序中，我们的数据发生改变，视图就要跟着发生变化，我们称这种行为叫做副作用，vue@3中提供了 `wacthEffect()` 来监听这种副作用
+```js
+const count = ref(0);
+const num = ref(1);
+
+// 在watchEffect里面用到了哪些响应式数据，就会监听哪一些
+// 比如下面的watchEffect里面只有 num这个响应式数据，所以num改变就会触发
+// 而 count 并不在里面，所以count改变了也不会触发
+watchEffect(() => {
+    console.log(num.value); 
+});
+```
+不同于watch， watchEffect在组件初始化的时候就会调用一次，可以理解为一进入页面就会调一次。而watch是首次数据不会调用，数据发生改变之后才会调
+
+
+`watchEffect()` 返回一个函数，调用函数则会取消掉监听（仅仅取消监听而已），也会还是会继续相应
+```js
+const num = ref(1);
+const change = () => {
+    num.value++;
+    // 当num=5的时候，执行了stop，则取消监听
+    if (num.value === 5) {
+        stop();
+    }
+};
+const stop = watchEffect(() => {
+    console.log('watchEffect', num.value);
+});
+```
+![](./img/watcheffect.gif)
+
+
+### 清除副作用
+清除副作用主要是在异步函数中进行使用的，因为有的时候，我们需要在异步函数触发之前，就会进行一些副作用的功能。
+
+比如输入框，用户每次输完后，我们实时请求后台数据，我们其实没有必要每次输入都发起ajax请求，我们只需要在最后一次发起就可以了，前面的ajax是可以取消的。
+
+```js
+const keyword = ref('');
+var cacenlToken = null;
+
+watchEffect(async(cancel) => {
+    const resp = await axios.get('/api', {
+        params: {keyword: keyword.value},
+        cancelToken: new axios.CancelToken((c) => {
+            cacenlToken = c;
+        })
+    });
+
+    // 就算放在后面，也是比await先触发
+    cancel(() => {
+        cacenlToken(); // 取消ajax的请求
+    });
+})
+```
+
+### 副作用刷新时机
+首先要了解副作用是什么时候触发的。
+```js
+const count = ref(0);
+const update = () => {
+    count.value++;
+};
+onBeforeMount(() => {
+    console.log('onBeforeMount')
+})
+onMounted(() => {
+    console.log('onMounted')
+})
+watchEffect(() => {
+    console.log('count', count.value);
+});
+```
+首次进入页面的时候，上面的执行顺序是 `watchEffect -> onBeforeMount -> onMounted`
+
+如果我们想要让 watchEffect 在组件挂载后执行，可以把watchEffect放在onMounted里面，这样子我们才可以在 watchEffect 里面拿到DOM和ref对象
+```js
+onBeforeMount(() => {
+    console.log('onBeforeMount')
+});
+onMounted(() => {
+    watchEffect(() => {
+        console.log('wactchEffect' , document.getElementById('box'));
+    });
+    console.log('onMounted')
+})
+```
+> 上面的虽然在watchEffect里面拿到DOM了，但是执行顺序是`onBeforeMount -> wactchEffect -> onMounted`
+
+
+
 
 ## 代码复用hooks
 代码: `Hooks.vue`
@@ -366,7 +458,7 @@ setup() {
 
 
 
-## 代码复用hooks
+### 代码复用hooks
 使用hooks封装一个场景，axios请求接口，请求前展示loading文字，请求后展示后台的数据
 
 代码: `HooksLoading.vue`
@@ -529,6 +621,8 @@ onErrorCaptured(ev => {
     return true; // 表示向上传递
 });
 ```
+
+
 
 ## 去掉了事件总线
 在 vue@2 中，我们经常用 `const eventBus = new Vue()` 事件总线来跨组件通讯。

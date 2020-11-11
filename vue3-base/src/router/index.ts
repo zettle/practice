@@ -14,6 +14,9 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/suspensePromise', component: () => import('../views/SuspensePromise.vue') },
     { path: '/test', component: () => import('../views/Test.vue') },
     { path: '/mitt', component: () => import('../views/Mitt.vue') },
+    { path: '/watchEffect', component: () => import('../views/WatchEffect.vue') },
+    { path: '/watchEffecttime', component: () => import('../views/WatchEffecttime.vue') },
+    
 ]
 
 const router = createRouter({
