@@ -1,6 +1,6 @@
 # 深入学习koa
 
-## 最简单的demo
+## 1、 最简单的demo
 ```js
 const Koa = require('koa');
 const app = new Koa();
@@ -18,7 +18,9 @@ koa的源码位置: `/node_modules/koa` 通过 `package.json`的main字段得出
 
 
 
-## 主入口
+## 2、 主入口
+
+### 2.1 依赖
 首先看下这个js的依赖了哪些模块
 
 ```js
@@ -96,6 +98,7 @@ module.exports = class Application extends Emitter {
 };
 ```
 
+### 2.2 构造函数
 接着看构造函数，定义了各种属性，注释如下
 ```js
 constructor(options) {
@@ -123,3 +126,57 @@ constructor(options) {
     }
 }
 ```
+
+
+### 2.3 use方法
+一般use的用法，我们用到use的场景如下
+```js
+// 代码 /src/app.js
+app.use(async ctx => {
+    ctx.body = 'Hello World';
+});
+```
+
+看use的源码
+```js
+// 代码 /node_modules/koa/lib/application.js
+use(fn) {
+    // 判断下不是函数的就抛异常
+    if (typeof fn !== 'function') throw new TypeError('middleware must be a function!');
+    // 兼容写法: 如果是老的koa的Generator中间件，将其转为标准的promise中间件
+    if (isGeneratorFunction(fn)) {
+      deprecate('Support for generators will be removed in v3. ' +
+                'See the documentation for examples of how to convert old middleware ' +
+                'https://github.com/koajs/koa/blob/master/docs/migration.md');
+      fn = convert(fn);
+    }
+    debug('use %s', fn._name || fn.name || '-');
+
+    // 总体看下来，整个use的核心用法就是下面2句
+    // 把传递进来的函数 push 到一个数组中
+    this.middleware.push(fn);
+    return this;
+}
+  ```
+
+
+
+### 2.4 listen方法
+在外界是这么用listen的
+```js
+// 代码: app.js
+app.listen(3000);
+```
+
+在koa中，源码如下
+```js
+// 代码 /node_modules/koa/lib/application.js
+listen(...args) {
+    debug('listen');
+    const server = http.createServer(this.callback());
+    return server.listen(...args); // 从这里看出外界传递的参数都传递给 http 模块
+}
+```
+从代码不难看出，`app.linsten()` 传递的参数都会给到 node 的 http 模块。即[http模块的listen参数](http://nodejs.cn/api/http.html#http_server_listen)，都可以由外界传递进来
+
+
