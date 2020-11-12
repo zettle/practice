@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "serve": "node backend/app.js"
+    "serve": "nodemon backend/app.js"
   },
   "dependencies": {
     "axios": "^0.21.0",

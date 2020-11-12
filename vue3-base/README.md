@@ -1,6 +1,8 @@
 # vue3.0-基础操作
 
-## 和vue2.0的代码的对比
+## 1、和vue2.0的代码的对比
+
+### 1.1 最简单的demo
 点击按钮，累加器count累加1，然后还有个变量double是count的双倍
 
 在vue2.0的时候，代码如下:
@@ -27,9 +29,10 @@ export default {
 到了vue3.0
 
 - 提供了setup生命周期，意为“准备阶段”。**在该周期里vue实例还没创建，所以无法通过this访问到实例。** 要把在页面上展示的数据和事件，在setup上最后要return出去 
-- 提供了ref来实现相应，想要一个变量是相应的，只需要用ref包裹下
+- 提供了ref来实现响应式数据，想要一个变量是相应的，只需要用ref包裹下
 - 提供了computed函数，来实现上面的计算数据
 - 由于没有实例，所以无法通过`this.xxx`访问对象。同时，改变数据得通过`xxx.value`去改变才会触发相应
+
 变成下面的代码
 ```js
 import { ref,computed } from 'vue';
@@ -53,7 +56,7 @@ export default {
 
 再继续演变
 
-- 上面代码中，count和double太分散了，我们可以用reactive函数来包裹整个数据。然后改变数据的时候，不需要通过`xxx.value`去改变了，而是通过`data.xxx`去改变
+上面代码中，count和double太分散了，我们可以用reactive函数来包裹整个数据。然后改变数据的时候，不需要通过`xxx.value`去改变了，而是通过`data.xxx`去改变
 ```js
 setup () {
     const data = reactive({
@@ -63,6 +66,8 @@ setup () {
     })
 }
 ```
+
+### 1.2 reactive和computed一起使用变成any类型
 在vue3中，reactive和computed一起使用的时候，有个缺陷，reactive会返回一个any类型，这个时候ts编译器会提示下面
 ```
 'data' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
@@ -227,7 +232,7 @@ var {name} = person;
 name = '小哥'; // 脱离了引用赋值，所以这里的改变不会影响到原对象里面
 ```
 
-### 声明只能取值某些范围
+### 1.3 声明只能取值某些范围
 当我们想要限定变量的取值范围在我们指定的几个值里面，可以给ref传递一个泛型
 ```js
 type UploadStatus = 'ready' | 'loading' | 'sucess' | 'error';
@@ -674,6 +679,80 @@ onErrorCaptured(ev => {
 });
 ```
 
+
+## 插件开发
+在vue@2中，我们通过`provider/inject`跨级组件通讯，在vue@3中也有类似的功能。兄弟组件就无法通过这种方式共享数据，因为代码无法确定执行inject的时候，已经执行过provider
+
+我们将要跨级通讯的数据存到provider，然后通过inject获取
+
+```js
+// 中间件js
+// 代码: /src/js/useCross.ts
+import { provide, inject, Ref } from 'vue';
+
+const StoreSymbol = Symbol(); // 生成唯一的key
+
+// 给祖先级用的，传入想要共享的数据
+export function providerStore(count: Ref<number>) {
+    provide(StoreSymbol, count);
+}
+
+// 给后代组件用的，返回共享的数据
+export function useStore(): Ref<number> | undefined {
+    const count = inject<Ref<number>>(StoreSymbol);
+    return count;
+}
+```
+然后在祖先元素就可以通过provide传入数据
+```vue
+<template>
+    <div>
+        <p>{{count}}</p>
+        <button @click="update">更新</button>
+        
+        <child></child>
+    </div>
+</template>
+
+<script>
+import { defineComponent, ref } from 'vue';
+import { providerStore } from '@/js/useCross';
+import Child from '@/components/Child.vue';
+export default defineComponent({
+    components: { Child },
+    setup () {
+        const count = ref(1);
+        const update = () => {
+            count.value++;
+        };
+        providerStore(count);
+
+        return {count, update};
+    }
+});
+</script>
+```
+然后再后背组件获取
+```vue
+<template>
+    <div>child: {{num}}</div>
+</template>
+
+<script>
+import { defineComponent, watchEffect } from 'vue';
+import { useStore } from '@/js/useCross';
+export default defineComponent({
+    setup () {
+        const num = useStore();
+        watchEffect(() => {
+            console.log('this is child', num.value);
+        });
+
+        return { num };
+    }
+})
+</script>
+```
 
 
 ## 去掉了事件总线
