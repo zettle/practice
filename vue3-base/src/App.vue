@@ -11,6 +11,8 @@
         <router-link to="/suspensePromise">suspense组件</router-link> |
         <router-link to="/mitt">mitt事件总线</router-link> |
         <router-link to="/test">test</router-link> |
+        <router-link to="/watchEffect">watchEffect</router-link> |
+        <router-link to="/watchEffecttime">watchEffecttime</router-link> |
     </div>
     <div class="view">
         <router-view />
