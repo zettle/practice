@@ -159,7 +159,11 @@ return {
 
 这也解释了为什么点击按钮不发生改变了，只有响应式的数据才会发生响应，我们把响应式数据中对象中取出来（即通过`data.xxx`）得到是普通类型的数据。
 
-为了解决这个问题，vue3推出了 `toRefs()` 函数，在return出去之前，再用toRefs包装下data数据，就可以了。最终代码如下
+为了解决这个问题，vue3推出了 `toRefs()` 函数，在return出去之前，再用toRefs包装下data数据，就可以了。
+
+`toRefs`是将对象里面数据都转为ref对象
+
+最终代码如下
 ```js
 import { reactive, computed, toRefs } from 'vue';
 interface Tcount {
@@ -182,6 +186,35 @@ export default {
     }
 };
 ```
+
+有时候，只是想要去某个值，就可以用下面的写法解构
+```js
+export default {
+    setup () {
+        const data: Tcount = reactive({
+            count: 0,
+            double: computed(() => data.count*2),
+            add: () => { console.log('add');data.count++}
+        });
+        const {count} = toRefs(data); // 解构赋值
+
+        return {
+            count
+        }
+    }
+};
+```
+
+有时候，我们不想要把data里面的属性都转为响应式。
+
+比如其他的属性只是在js内部使用，不需要和页面响应式。
+
+那么在 `toRefs()` 传递第2个参数可以控制转化的范围
+```js
+const count = toRefs(data, 'count'); // 仅仅将count转为，其他的不会转化
+```
+
+
 
 > 这种问题的大致现象可以通过下面方式解释下:
 在js中，我们定义了一个对象如下
