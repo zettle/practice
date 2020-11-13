@@ -18,7 +18,7 @@ koa的源码位置: `/node_modules/koa` 通过 `package.json`的main字段得出
 
 
 
-## 2、 主入口
+## 2、 主入口 application.js
 
 ### 2.1 依赖
 首先看下这个js的依赖了哪些模块
@@ -253,3 +253,88 @@ handleRequest(ctx, fnMiddleware) {
 
 ![](./readmeImg/application.png)
 
+
+
+## 2、 context.js
+
+### 2.1 依赖
+```js
+const util = require('util');
+// 创建http错误码，比如404/502等等
+const createError = require('http-errors');
+// 断言
+const httpAssert = require('http-assert');
+// 代理委托
+const delegate = require('delegates');
+// 状态码
+const statuses = require('statuses');
+const Cookies = require('cookies');
+const COOKIES = Symbol('context#cookies');
+```
+context.js 暴露给外面的是一个 proto 变量，整个js内容围绕着丰富这个变量进行
+
+### 2.2 创建变量
+```js
+// 定义了各种工具方法
+const proto = module.exports = {
+    inspect() {},
+    toJSON() {},
+    assert: httpAssert
+    throw() {},
+    onerror() {},
+    get cookies() {}
+    set cookies(_cookies) {}
+}
+```
+上面挂载了各种工具方法
+```js
+// 把 response 里面的 attachment/redirect 方法等，加到 proto上
+delegate(proto, 'response')
+  .method('attachment')
+  .method('redirect');
+
+delegate(proto, 'request')
+  .method('acceptsLanguages')
+  .method('acceptsEncodings')
+  .method('acceptsCharsets');
+```
+
+
+
+## 3、 request.js
+request.js 里面也是暴露了一个 proto，然后在 application.js 中 `Object.create(request)` 将这个proto设置为新对象的prototype
+
+request.js 里面是各种get 和 set方法
+
+
+## 5、 response.js
+response.js 里面也是暴露了一个 proto，然后在 application.js 中 `Object.create(response)` 将这个proto设置为新对象的prototype
+
+response.js 里面是各种方法
+```js
+module.exports = {
+    get socket() {},
+    get header() {},     // 获取请求头，没有返回{}
+    get headers() {},    // 同 get header()
+    get/set status() {}, // 获取/设置http状态码
+    get/set message() {},
+    get/set body() {},   // 获取/设置请求体
+    get/set length() {}, // 获取/设置Content-Length
+    get headerSent() {}, 
+    vary () {},       // 客户端和服务端的内容协商
+    redirect() {},    // 重定向
+    attachment() {},  // 附件类型
+    get/set type () {},  // 获取/设置返回类型，是图片还是文本等
+    get/set lastModified() {}, // 获取/设置文件上一次的更新时间
+    get/set etag() {},   // 和上面的lastModified一起使用可以给前端做一些缓存
+    is () {},     // 判断 type 是否是在types里面
+    get() {},     // 获取header某一项内容
+    has() {},     // 判断是否有某headers
+    set() {},     // 设置header
+    append() {},  // 向header设置一些自定义的内容
+    remove() {},  // 移除headers的某些字段
+    // 用来判断 response 是否继续可写，如果已经完成响应就不能继续写内容了
+    // 比如在调了 this.body = {}; 后，我们还继续调用this.body就不予许了
+    get writable() {},
+}
+```
