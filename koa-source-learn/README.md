@@ -250,3 +250,6 @@ handleRequest(ctx, fnMiddleware) {
     return fnMiddleware(ctx).then(handleResponse).catch(onerror);
 }
 ```
+
+![](./readmeImg/application.png)
+
