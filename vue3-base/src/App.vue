@@ -13,6 +13,7 @@
         <router-link to="/test">test</router-link> |
         <router-link to="/watchEffect">watchEffect</router-link> |
         <router-link to="/watchEffecttime">watchEffecttime</router-link> |
+        <router-link to="/parent">provider/inject</router-link> |
     </div>
     <div class="view">
         <router-view />
