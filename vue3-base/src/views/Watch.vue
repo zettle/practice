@@ -28,10 +28,12 @@ export default defineComponent({
       greeting.value += '!';
     }
 
-    watch(() => 4, (newVal, oldVal) => {
-      console.log('newVal', newVal);
-      console.log('oldVal', oldVal);
+    watch(() => data.count, (newVal, oldVal, clean) => {
+      console.log(newVal, oldVal);
       document.title = greeting.value;
+      clean(() => {
+        console.log('clean');
+      })
     })
 
     return {

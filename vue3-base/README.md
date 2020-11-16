@@ -297,6 +297,17 @@ watch([()=>data.count, greeting], (newVal, oldVal) => {
 });
 ```
 
+`watch(xxx, (newVal, oldVal, clean) => {})` 第3个参数`clean`的作用，会从第2次watch触发开始每次执行watch之前触发
+```js
+watch(() => data.count, (newVal, oldVal, clean) => {
+    console.log('newVal', newVal, oldVal);
+    clean(() => { // 第一次触发watch并不会执行，到了第2次就会最先执行，我们常常用来处理异步情况
+        console.log('clean');
+    });
+})
+```
+![](./readmeImg/watch-clean.gif)
+
 
 ## watchEffect()
 在程序中，我们的数据发生改变，视图就要跟着发生变化，我们称这种行为叫做副作用，vue@3中提供了 `wacthEffect()` 来监听这种副作用
