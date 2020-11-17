@@ -112,3 +112,21 @@ npm i -D sass sass-loader
 ```
 
 安装完后即可，在 `.vue` 文件中就可以直接使用`<style lang="scss" scoped></style>`
+
+
+
+
+## 5、vite.config.ts
+[相关配置文档](https://github.com/vitejs/vite/blob/master/src/node/config.ts)
+
+在根目录新建 `vite.config.ts` 内容如下:
+
+```typescript
+import type { UserConfig } from 'vite';
+const  viteConfig: UserConfig = {
+    port: 3555, // 修改端口号
+    hostname: '0.0.0.0',
+    open: true // 自动打开浏览器
+};
+export default viteConfig;
+```
