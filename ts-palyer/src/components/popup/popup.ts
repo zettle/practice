@@ -7,11 +7,19 @@ interface Ipopup {
     content?: () => void;
 }
 
+interface Icomponent {
+    tempContainer: HTMLDivElement;
+    init: () => void;
+    template: () => void;
+    handle: () => void;
+}
+
 function popup (options: Ipopup) {
     return new Popup(options);
 }
 
-class Popup {
+class Popup implements Icomponent {
+    tempContainer: HTMLDivElement = document.createElement('div');
     constructor (private settings: Ipopup) {
         this.settings = Object.assign({
             width: '100%',
@@ -21,7 +29,19 @@ class Popup {
             mask: true,
             content: () => {}
         }, this.settings);
+        this.init();
     }
+    init () {
+        this.template();
+    }
+    template () {
+        this.tempContainer = document.createElement('div');
+        this.tempContainer.innerHTML = `
+            <h1>Hello</h1>
+        `;
+        document.body.appendChild(this.tempContainer);
+    }
+    handle () {}
 }
 
 export default popup;
