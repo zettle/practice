@@ -1,4 +1,4 @@
-import './main.css';
+import './main.scss';
 import './iconfont/iconfont.css'
 
 const name: string = 'xiaomsddddfing';
