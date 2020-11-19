@@ -14,6 +14,7 @@
         <router-link to="/watchEffect">watchEffect</router-link> |
         <router-link to="/watchEffecttime">watchEffecttime</router-link> |
         <router-link to="/parent">provider/inject</router-link> |
+        <router-link to="/getDom">getDom</router-link> |
     </div>
     <div class="view">
         <router-view />

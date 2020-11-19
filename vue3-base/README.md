@@ -67,6 +67,25 @@ setup () {
 }
 ```
 
+判断一个变量是不是ref，用`isRef`
+```js
+setup () {
+    const name = ref('');
+    console.log(isRef(name)); // true
+
+    const formData = reactive({
+        age: 0,
+        name: '小明'
+    });
+    console.log(isRef(formData)); // false
+    console.log(isRef(formData.name)); // false
+
+    const refData = toRefs(formData);
+    console.log(isRef(refData)); // false
+    console.log(isRef(refData.age)); // true
+;}
+```
+
 ### 1.2 reactive和computed一起使用变成any类型
 在vue3中，reactive和computed一起使用的时候，有个缺陷，reactive会返回一个any类型，这个时候ts编译器会提示下面
 ```
@@ -825,3 +844,5 @@ import {nextTick, observalbe} from 'vue';
 nextTick(() => {});
 const obj = observalbe({})
 ```
+
+
