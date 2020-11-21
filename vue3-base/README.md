@@ -282,6 +282,178 @@ ref底层是调用reactive，比如 `const count = ref(1)` 在底层是这么调
 判断一个变量是不是reactive，vue提供了 `isReactive()`
 
 
+### 1.5 递归监听和非递归监听
+代码: `/src/views/shallowReactive.vue`
+
+首先理解什么是递归监听，我们用reactive或ref声明数据的时候，其实是一个递归监听。
+
+比如下面代码:
+```js
+setup () {
+    const person = reactive({
+        a: 'a',
+        dd: {
+            ee: 'b',
+            tt: {
+                sdf: 'c',
+                sdfa: {
+                    sdfs: 'd'
+                }
+            }
+        }
+    });
+
+    const update = () => {
+        console.log(person); // Proxy{}
+        console.log(person.dd); // Proxy{}
+        console.log(person.dd.tt); // Proxy{}
+        console.log(person.dd.tt.sdfa); // Proxy{}
+
+        person.a = '1';
+        person.dd.ee = '2';
+        person.dd.tt.sdf = '3';
+        person.dd.tt.sdfa.sdfs = '4';
+
+        console.log(JSON.stringify(person));
+    };
+    return {person, update};
+}
+```
+通过 `console.log` 可以看出，不论层级多深，vue都会递归出来并且将其声明加上proxy监听。
+
+在 ref 中也是如此
+```js
+const person = ref({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person.value); // proxy{}
+    console.log(person.value.dd); // proxy{}
+    console.log(person.value.dd.tt); // proxy{}
+    console.log(person.value.dd.tt.sdfa); // proxy{}
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+```
+
+vue@3 提供了 `shallowReactive/shallowRef` 来实现非递归监听，只会监听第1层
+```js
+const person = shallowReactive({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person); // proxy{}
+    console.log(person.dd); // {}
+    console.log(person.dd.tt); // {}
+    console.log(person.dd.tt.sdfa); // {}
+    person.a = '1';
+    person.dd.ee = '2';
+    person.dd.tt.sdf = '3';
+    person.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+```
+从 `console.log` 的结果看出，只有 person 是proxy类型，其他的都是普通的对象类型。
+
+当我们点击按钮触发update的时候，可以看到界面所有的数据跟着改了，但这不能说明所有数据都是proxy响应式的
+
+![](./readmeImg/shallowreactive.gif)
+
+出现数据更新是因为我们的第1层是proxy响应式，即 `{a: 'a'}` 这一层才是响应式。
+
+而我们执行了代码`person.a='1'`，会触发响应更新视图，在更新DOM之前，后面的代码已经对数据造成了影响，所以这个时候更新上去的数据，看上去好像所有数据都有发生响应
+
+如果我们把`person.a='1'`去掉，就会发生，即使我们执行了update，视图也不会跟着改变
+
+而相同的代码，换成 shallowRef 效果如下: 
+```js
+const person = shallowRef({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person.value); // {}
+    console.log(person.value.dd); // {}
+    console.log(person.value.dd.tt); // {}
+    console.log(person.value.dd.tt.sdfa); // {}
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+return {person, update};
+```
+通过console 我们看出无论哪一层，都是普通的对象而不是proxy对象，这是为什么呢？
+
+前面已经讲过 ref 底层会用 `reactive({value: xxx})` 那么套在这里就能理解了，其实第1层是 `{value:xx}`。
+
+可以这么理解，通过 `shallowRef` 创建数据，那么vue监听的是 `.value` 的变化，并不是第1层
+
+假如我们改成下面写法
+```js
+const update = () => {
+    // 改变value的地址了
+    person.value = {
+        a: '1',
+        dd: {
+            ee: '2',
+            tt: {
+                sdf: '3',
+                sdfa: {
+                    sdfs: '4'
+                }
+            }
+        }
+    };
+};
+```
+那么就会触发更新DOM
+
+如果我们真的不想通过改变value内存地址去更新DOM，vue还提供了另外一个 `triggerRef` 让我们可以手动触发更新DOM
+```js
+const update = () => {
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    triggerRef(person); // 在做完上面一系列操作后，手动调用 triggerRef ，vue就会触发更新DOM
+};
+```
+
+> 需要注意的是，vue提供了 triggerRef 和 shallowRef 搭配使用，但是对于shallowReactive并没有提供类似的triggerReactive
+
+
+
 ## vue3的生命周期
 从vue2迁到vue3的有: 
 * `beforeCreate()` --> `use setup()`
