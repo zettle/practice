@@ -12,7 +12,7 @@ import ChildRef from '../components/ChildRef.vue';
 
 export default defineComponent({
   components: {ChildRef},
-  setup() {
+  setup(props, context) {
     const content = ref('');
     onMounted(() => {
         console.log(content);

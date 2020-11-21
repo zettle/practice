@@ -15,6 +15,8 @@
         <router-link to="/watchEffecttime">watchEffecttime</router-link> |
         <router-link to="/parent">provider/inject</router-link> |
         <router-link to="/getDom">getDom</router-link> |
+        <router-link to="/react">react</router-link> |
+        <router-link to="/shallowReactive">shallowReactive 和 shallowRef</router-link> |
     </div>
     <div class="view">
         <router-view />

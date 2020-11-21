@@ -18,6 +18,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/watchEffecttime', component: () => import('../views/WatchEffecttime.vue') },
     { path: '/parent', component: () => import('../views/Parent.vue') },
     { path: '/getDom', component: () => import('../views/getDom.vue') },
+    { path: '/react', component: () => import('../views/React.vue') },
+    { path: '/shallowReactive', component: () => import('../views/shallowReactive.vue') },
 ]
 
 const router = createRouter({

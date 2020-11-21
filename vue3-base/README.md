@@ -86,6 +86,13 @@ setup () {
 ;}
 ```
 
+setup 函数不能是异步函数，即不能用async修饰，否则会出现空白页面
+```js
+// 不能写下面的写法
+async setup () {}
+```
+
+
 ### 1.2 reactive和computed一起使用变成any类型
 在vue3中，reactive和computed一起使用的时候，有个缺陷，reactive会返回一个any类型，这个时候ts编译器会提示下面
 ```
@@ -262,6 +269,17 @@ setup () {
     fileStatus.value = 'loading'; // 可以
 }
 ```
+
+### 1.4 reactive和ref
+ref用来声明简单类型的响应式，reactive用来声明数组、对象的响应式
+
+ref底层是调用reactive，比如 `const count = ref(1)` 在底层是这么调用reactive `const count = reactive({value:1})`
+
+这也解释了为什么我们改变ref的值的时候，要通过`count.value`去改变
+
+判断一个变量是不是ref，vue提供了 `isRef()` 。
+
+判断一个变量是不是reactive，vue提供了 `isReactive()`
 
 
 ## vue3的生命周期
