@@ -20,6 +20,9 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/getDom', component: () => import('../views/getDom.vue') },
     { path: '/react', component: () => import('../views/React.vue') },
     { path: '/shallowReactive', component: () => import('../views/shallowReactive.vue') },
+    { path: '/toRows', component: () => import('../views/toRows.vue') },
+    { path: '/toRawsRef', component: () => import('../views/toRawsRef.vue') },
+    { path: '/markRaw', component: () => import('../views/markRaw.vue') },
 ]
 
 const router = createRouter({

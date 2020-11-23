@@ -17,6 +17,9 @@
         <router-link to="/getDom">getDom</router-link> |
         <router-link to="/react">react</router-link> |
         <router-link to="/shallowReactive">shallowReactive 和 shallowRef</router-link> |
+        <router-link to="/toRows">toRaw</router-link> |
+        <router-link to="/toRawsRef">ref的toRaw</router-link> |
+        <router-link to="/markRaw">markRaw</router-link> |
     </div>
     <div class="view">
         <router-view />

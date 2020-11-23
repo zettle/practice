@@ -1036,3 +1036,75 @@ const obj = observalbe({})
 ```
 
 
+## toRaw
+首先看个例子，代码位置: `/src/views/toRows.vue`
+```vue
+<template>
+    <pre>{{personRef}}</pre>
+    <button type="button" @click="update">更新</button>
+</template>
+<script lang="ts">
+    const person = { name: 'xiaoming', age: 23};
+    const personRef = reactive(person);
+    console.log(person === personRef); // false 一个是普通的对象，一个是Proxy对象
+
+    const update = () => {
+        person.name = 'xiaohong'; // 改变person.name
+        console.log(personRef); // proxy{} 里面的name已经改了，但是视图没有跟着改变
+    };
+
+    return {personRef, update};
+</script>
+```
+上面代码中，person和personRef是引用关系，personRef的本质是一个Proxy对象，这个Proxy对象中引用了person，Proxy里面保存了person的内存地址。
+
+所以在 `person.name='xiaohong'` 改变了person的name属性，那么Proxy里面的值也会跟着改。但是不会触发视图的更新
+
+只有通过Proxy包装之后的对象来修改，才会触发界面的更新
+
+`toRaw` 就是用来获取Proxy对象的原始引用的，还是上面的代码
+```js
+const person = { name: 'xiaoming', age: 23};
+const personRef = reactive(person);
+console.log(person === personRef); // false 一个是普通对象，一个是proxy
+console.log(person === toRaw(personRef)); // true toRaw返回proxy的原始引用
+```
+
+那么 `toRaw` 有什么作用？
+
+我们知道 `ref/reactive` 数据类型的特点，每次修改都会被追踪，都会更新UI界面，但是这样其实是非常消耗性能的。
+
+所以我们如果有一些操作不需要更新UI界面，那么这个时候，我们就可以通过toRaw获取原始引用，去修改原始引用，这样就不会更新UI界面。
+
+而对于ref类型的获取原始引用，需要通过`xx.value`的方式获取
+```js
+const person = { name: 'xiaoming', age: 23};
+const personRef = ref(person); // RefImpl{} 对象
+toRaw(personRef) === personRef; // true 如果直接调用 toRaw() 获取到的还是 RefImpl{} 对象
+toRaw(personRef.value) === person; // true 要通过 .value 再获取则可以获取原始引用
+```
+这是因为，在前面也讲过， `ref()` 本质上会调用 `reactive({value: YYYY})` 所以真正是proxy对象的是 `xxx.value` 上的
+
+
+
+## markRaw
+
+代码: `/src/views/markRaw.vue`
+
+用 markRaw 标记一个对象，永远不会被`ref/reactive`追踪
+```js
+const person = {name:'xiaoming',age:23};
+markRaw(person); // 标记
+
+const personReactive = reactive(person);
+const personRef = ref(person);
+
+const update = () => {
+    personReactive.name = 'xiaohong';
+    console.log(person); // js中已经改为xiaohong
+    console.log(personReactive); // js中已经改为xiaohong，但是视图不会更新
+    console.log(personRef.value); // js中已经改为xiaohong，但是视图不会更新
+}
+```
+从上面可以看出，一旦一个普通对象被 `markRaw()` 标记，那么即使后面声明 `ref/reactive` 去改变，也不会引起视图的更新
+
