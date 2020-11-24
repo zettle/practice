@@ -17,6 +17,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/watchEffect', component: () => import('../views/WatchEffect.vue') },
     { path: '/watchEffecttime', component: () => import('../views/WatchEffecttime.vue') },
     { path: '/parent', component: () => import('../views/Parent.vue') },
+    { path: '/toRef', component: () => import('../views/toRef.vue') },
+    { path: '/toRefs', component: () => import('../views/toRefs.vue') },
 ]
 
 const router = createRouter({
