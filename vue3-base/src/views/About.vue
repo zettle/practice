@@ -25,6 +25,7 @@ export default defineComponent({
       console.log('About-onBeforeMount');
     });
     onMounted(() => {
+      console.log(this); //undefined
       console.log('About-onMounted');
     });
     onBeforeUpdate(() => {
