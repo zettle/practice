@@ -286,7 +286,7 @@ setup() {
     onRenderTracked((event) => {
         console.log('onRenderTracked', event);
     });
-    onRenderTriggered(() => {
+    onRenderTriggered((event) => {
         console.log('onRenderTriggered', event);
     });
 }
