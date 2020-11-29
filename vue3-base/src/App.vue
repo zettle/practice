@@ -14,17 +14,14 @@
         <router-link to="/watchEffect">watchEffect</router-link> |
         <router-link to="/watchEffecttime">watchEffecttime</router-link> |
         <router-link to="/parent">provider/inject</router-link> |
-<<<<<<< HEAD
         <router-link to="/toRef">toRef</router-link> |
         <router-link to="/toRefs">toRefs</router-link> |
-=======
         <router-link to="/getDom">getDom</router-link> |
         <router-link to="/react">react</router-link> |
         <router-link to="/shallowReactive">shallowReactive 和 shallowRef</router-link> |
         <router-link to="/toRows">toRaw</router-link> |
         <router-link to="/toRawsRef">ref的toRaw</router-link> |
         <router-link to="/markRaw">markRaw</router-link> |
->>>>>>> e2365ced7a7fd4aee129a96e9101182775f05118
     </div>
     <div class="view">
         <router-view />
