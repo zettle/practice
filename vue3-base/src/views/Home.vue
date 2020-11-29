@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, isRef, ref, defineComponent, reactive, toRefs } from 'vue';
 interface TCountData {
   count: number;
   double: number;
@@ -16,15 +16,19 @@ interface TCountData {
 export default defineComponent({
   name: 'Home',
   setup() {
-    console.log(23);
     const data: TCountData = reactive({
       count: 0,
       double: computed(() => data.count * 2),
       add: () => data.count++
     });
 
-    const refData = toRefs(data);
+    const name = ref('');
+    console.log('name-ifRef', isRef(name));
+    console.log('data-ifRef', isRef(data.count));
 
+    const refData = toRefs(data);
+    console.log('refData-ifRef', isRef(refData.count));
+    
     return {
       ...refData
     }

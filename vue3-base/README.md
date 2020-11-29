@@ -67,6 +67,32 @@ setup () {
 }
 ```
 
+判断一个变量是不是ref，用`isRef`
+```js
+setup () {
+    const name = ref('');
+    console.log(isRef(name)); // true
+
+    const formData = reactive({
+        age: 0,
+        name: '小明'
+    });
+    console.log(isRef(formData)); // false
+    console.log(isRef(formData.name)); // false
+
+    const refData = toRefs(formData);
+    console.log(isRef(refData)); // false
+    console.log(isRef(refData.age)); // true
+;}
+```
+
+setup 函数不能是异步函数，即不能用async修饰，否则会出现空白页面
+```js
+// 不能写下面的写法
+async setup () {}
+```
+
+
 ### 1.2 reactive和computed一起使用变成any类型
 在vue3中，reactive和computed一起使用的时候，有个缺陷，reactive会返回一个any类型，这个时候ts编译器会提示下面
 ```
@@ -243,6 +269,189 @@ setup () {
     fileStatus.value = 'loading'; // 可以
 }
 ```
+
+### 1.4 reactive和ref
+ref用来声明简单类型的响应式，reactive用来声明数组、对象的响应式
+
+ref底层是调用reactive，比如 `const count = ref(1)` 在底层是这么调用reactive `const count = reactive({value:1})`
+
+这也解释了为什么我们改变ref的值的时候，要通过`count.value`去改变
+
+判断一个变量是不是ref，vue提供了 `isRef()` 。
+
+判断一个变量是不是reactive，vue提供了 `isReactive()`
+
+
+### 1.5 递归监听和非递归监听
+代码: `/src/views/shallowReactive.vue`
+
+首先理解什么是递归监听，我们用reactive或ref声明数据的时候，其实是一个递归监听。
+
+比如下面代码:
+```js
+setup () {
+    const person = reactive({
+        a: 'a',
+        dd: {
+            ee: 'b',
+            tt: {
+                sdf: 'c',
+                sdfa: {
+                    sdfs: 'd'
+                }
+            }
+        }
+    });
+
+    const update = () => {
+        console.log(person); // Proxy{}
+        console.log(person.dd); // Proxy{}
+        console.log(person.dd.tt); // Proxy{}
+        console.log(person.dd.tt.sdfa); // Proxy{}
+
+        person.a = '1';
+        person.dd.ee = '2';
+        person.dd.tt.sdf = '3';
+        person.dd.tt.sdfa.sdfs = '4';
+
+        console.log(JSON.stringify(person));
+    };
+    return {person, update};
+}
+```
+通过 `console.log` 可以看出，不论层级多深，vue都会递归出来并且将其声明加上proxy监听。
+
+在 ref 中也是如此
+```js
+const person = ref({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person.value); // proxy{}
+    console.log(person.value.dd); // proxy{}
+    console.log(person.value.dd.tt); // proxy{}
+    console.log(person.value.dd.tt.sdfa); // proxy{}
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+```
+
+vue@3 提供了 `shallowReactive/shallowRef` 来实现非递归监听，只会监听第1层
+```js
+const person = shallowReactive({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person); // proxy{}
+    console.log(person.dd); // {}
+    console.log(person.dd.tt); // {}
+    console.log(person.dd.tt.sdfa); // {}
+    person.a = '1';
+    person.dd.ee = '2';
+    person.dd.tt.sdf = '3';
+    person.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+```
+从 `console.log` 的结果看出，只有 person 是proxy类型，其他的都是普通的对象类型。
+
+当我们点击按钮触发update的时候，可以看到界面所有的数据跟着改了，但这不能说明所有数据都是proxy响应式的
+
+![](./readmeImg/shallowreactive.gif)
+
+出现数据更新是因为我们的第1层是proxy响应式，即 `{a: 'a'}` 这一层才是响应式。
+
+而我们执行了代码`person.a='1'`，会触发响应更新视图，在更新DOM之前，后面的代码已经对数据造成了影响，所以这个时候更新上去的数据，看上去好像所有数据都有发生响应
+
+如果我们把`person.a='1'`去掉，就会发生，即使我们执行了update，视图也不会跟着改变
+
+而相同的代码，换成 shallowRef 效果如下: 
+```js
+const person = shallowRef({
+    a: 'a',
+    dd: {
+        ee: 'b',
+        tt: {
+            sdf: 'c',
+            sdfa: {
+                sdfs: 'd'
+            }
+        }
+    }
+});
+const update = () => {
+    console.log(person.value); // {}
+    console.log(person.value.dd); // {}
+    console.log(person.value.dd.tt); // {}
+    console.log(person.value.dd.tt.sdfa); // {}
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    console.log(JSON.stringify(person));
+};
+return {person, update};
+```
+通过console 我们看出无论哪一层，都是普通的对象而不是proxy对象，这是为什么呢？
+
+前面已经讲过 ref 底层会用 `reactive({value: xxx})` 那么套在这里就能理解了，其实第1层是 `{value:xx}`。
+
+可以这么理解，通过 `shallowRef` 创建数据，那么vue监听的是 `.value` 的变化，并不是第1层
+
+假如我们改成下面写法
+```js
+const update = () => {
+    // 改变value的地址了
+    person.value = {
+        a: '1',
+        dd: {
+            ee: '2',
+            tt: {
+                sdf: '3',
+                sdfa: {
+                    sdfs: '4'
+                }
+            }
+        }
+    };
+};
+```
+那么就会触发更新DOM
+
+如果我们真的不想通过改变value内存地址去更新DOM，vue还提供了另外一个 `triggerRef` 让我们可以手动触发更新DOM
+```js
+const update = () => {
+    person.value.a = '1';
+    person.value.dd.ee = '2';
+    person.value.dd.tt.sdf = '3';
+    person.value.dd.tt.sdfa.sdfs = '4';
+    triggerRef(person); // 在做完上面一系列操作后，手动调用 triggerRef ，vue就会触发更新DOM
+};
+```
+
+> 需要注意的是，vue提供了 triggerRef 和 shallowRef 搭配使用，但是对于shallowReactive并没有提供类似的triggerReactive
+
 
 
 ## vue3的生命周期
@@ -827,4 +1036,78 @@ const obj = observalbe({})
 ```
 
 
+<<<<<<< HEAD
+=======
+## toRaw
+首先看个例子，代码位置: `/src/views/toRows.vue`
+```vue
+<template>
+    <pre>{{personRef}}</pre>
+    <button type="button" @click="update">更新</button>
+</template>
+<script lang="ts">
+    const person = { name: 'xiaoming', age: 23};
+    const personRef = reactive(person);
+    console.log(person === personRef); // false 一个是普通的对象，一个是Proxy对象
+
+    const update = () => {
+        person.name = 'xiaohong'; // 改变person.name
+        console.log(personRef); // proxy{} 里面的name已经改了，但是视图没有跟着改变
+    };
+
+    return {personRef, update};
+</script>
+```
+上面代码中，person和personRef是引用关系，personRef的本质是一个Proxy对象，这个Proxy对象中引用了person，Proxy里面保存了person的内存地址。
+
+所以在 `person.name='xiaohong'` 改变了person的name属性，那么Proxy里面的值也会跟着改。但是不会触发视图的更新
+
+只有通过Proxy包装之后的对象来修改，才会触发界面的更新
+
+`toRaw` 就是用来获取Proxy对象的原始引用的，还是上面的代码
+```js
+const person = { name: 'xiaoming', age: 23};
+const personRef = reactive(person);
+console.log(person === personRef); // false 一个是普通对象，一个是proxy
+console.log(person === toRaw(personRef)); // true toRaw返回proxy的原始引用
+```
+
+那么 `toRaw` 有什么作用？
+
+我们知道 `ref/reactive` 数据类型的特点，每次修改都会被追踪，都会更新UI界面，但是这样其实是非常消耗性能的。
+
+所以我们如果有一些操作不需要更新UI界面，那么这个时候，我们就可以通过toRaw获取原始引用，去修改原始引用，这样就不会更新UI界面。
+
+而对于ref类型的获取原始引用，需要通过`xx.value`的方式获取
+```js
+const person = { name: 'xiaoming', age: 23};
+const personRef = ref(person); // RefImpl{} 对象
+toRaw(personRef) === personRef; // true 如果直接调用 toRaw() 获取到的还是 RefImpl{} 对象
+toRaw(personRef.value) === person; // true 要通过 .value 再获取则可以获取原始引用
+```
+这是因为，在前面也讲过， `ref()` 本质上会调用 `reactive({value: YYYY})` 所以真正是proxy对象的是 `xxx.value` 上的
+
+
+
+## markRaw
+
+代码: `/src/views/markRaw.vue`
+
+用 markRaw 标记一个对象，永远不会被`ref/reactive`追踪
+```js
+const person = {name:'xiaoming',age:23};
+markRaw(person); // 标记
+
+const personReactive = reactive(person);
+const personRef = ref(person);
+
+const update = () => {
+    personReactive.name = 'xiaohong';
+    console.log(person); // js中已经改为xiaohong
+    console.log(personReactive); // js中已经改为xiaohong，但是视图不会更新
+    console.log(personRef.value); // js中已经改为xiaohong，但是视图不会更新
+}
+```
+从上面可以看出，一旦一个普通对象被 `markRaw()` 标记，那么即使后面声明 `ref/reactive` 去改变，也不会引起视图的更新
+>>>>>>> e2365ced7a7fd4aee129a96e9101182775f05118
 

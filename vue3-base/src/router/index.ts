@@ -17,8 +17,17 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/watchEffect', component: () => import('../views/WatchEffect.vue') },
     { path: '/watchEffecttime', component: () => import('../views/WatchEffecttime.vue') },
     { path: '/parent', component: () => import('../views/Parent.vue') },
+<<<<<<< HEAD
     { path: '/toRef', component: () => import('../views/toRef.vue') },
     { path: '/toRefs', component: () => import('../views/toRefs.vue') },
+=======
+    { path: '/getDom', component: () => import('../views/getDom.vue') },
+    { path: '/react', component: () => import('../views/React.vue') },
+    { path: '/shallowReactive', component: () => import('../views/shallowReactive.vue') },
+    { path: '/toRows', component: () => import('../views/toRows.vue') },
+    { path: '/toRawsRef', component: () => import('../views/toRawsRef.vue') },
+    { path: '/markRaw', component: () => import('../views/markRaw.vue') },
+>>>>>>> e2365ced7a7fd4aee129a96e9101182775f05118
 ]
 
 const router = createRouter({
