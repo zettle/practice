@@ -25,6 +25,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/toRows', component: () => import('../views/toRows.vue') },
     { path: '/toRawsRef', component: () => import('../views/toRawsRef.vue') },
     { path: '/markRaw', component: () => import('../views/markRaw.vue') },
+    { path: '/context', component: () => import('../views/context.vue') },
+    
 ]
 
 const router = createRouter({

@@ -15,7 +15,7 @@ interface TCountData {
 }
 export default defineComponent({
   name: 'About',
-  setup() {
+  setup(props, context) {
     const data: TCountData = reactive({
       count: 0,
       add: () => data.count++

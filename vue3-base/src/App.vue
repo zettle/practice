@@ -22,6 +22,7 @@
         <router-link to="/toRows">toRaw</router-link> |
         <router-link to="/toRawsRef">ref的toRaw</router-link> |
         <router-link to="/markRaw">markRaw</router-link> |
+        <router-link to="/context">context</router-link> |
     </div>
     <div class="view">
         <router-view />
