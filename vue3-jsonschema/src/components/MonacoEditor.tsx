@@ -26,7 +26,7 @@ export default defineComponent({
         title: {type: String,required: true}
     },
     setup (props) {
-        console.log(props.onChange);
+        // console.log(props.onChange);
         const editorRef = shallowRef();
         const containerRef = ref();
 
@@ -44,7 +44,6 @@ export default defineComponent({
             });
             // 根据内容的变化，实时返回给外界组件
             _subscription = editor.onDidChangeModelContent((event) => {
-                console.log('------>', __prevent_trigger_change_event);
                 if (!__prevent_trigger_change_event) {
                     props.onChange(editor.getValue(), event);
                 }
@@ -60,6 +59,7 @@ export default defineComponent({
         watch(() => props.code, (v) => {
             const editor = editorRef.value;
             const model = editor.getModel();
+            
             if (v !== model.getValue()) {
                 editor.pushUndoStop();
                 __prevent_trigger_change_event = true;
