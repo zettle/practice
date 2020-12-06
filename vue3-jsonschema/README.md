@@ -23,7 +23,6 @@ ts是支持编译jsx的，配置成`preserve`意思是: 让ts不要去编译jsx�
 
 ## vue-next部分源码解读
 
-
 ### defineComponent函数
 代码: [apiDefineComponent.ts](https://github.com/vuejs/vue-next/blob/master/packages/runtime-core/src/apiDefineComponent.ts)
 
@@ -34,3 +33,10 @@ export type PublicProps = VNodeProps &
   ComponentCustomProps
 ```
 定义了一些公共的Props，比如 `class/style` 
+
+
+
+## json-schema
+
+安装ajv: `npm i -S ajv`
+
