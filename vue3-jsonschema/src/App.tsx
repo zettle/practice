@@ -1,23 +1,48 @@
-import { defineComponent, h } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import { defineComponent, h, ref } from 'vue';
+import type {Ref} from 'vue';
+import { createUseStyles } from 'vue-jss';
+import MonacoEditor from './components/MonacoEditor';
+
+function toJson (data: any): string {
+    return JSON.stringify(data, null, 2);
+}
+
+const schema = {
+    type: 'string'
+};
+const useStyles = createUseStyles({
+    editor: {
+        minHeight: 400
+    }
+});
 
 export default defineComponent({
     name: 'App',
-    props: {
-        age: {type: Number, default: 234}
-    },
     components: {
-        HelloWorld
+        MonacoEditor
     },
-    setup (props) {
-        console.log(props);
-        
+    setup () {
+        const schemaRef: Ref<any> = ref(schema);
+        const handleCodeChange = (code: string) => {
+            let schema: any;
+            try {
+                schema = JSON.parse(code);
+            } catch(err) {}
+            schemaRef.value = schema;
+        }
+        const classesRef = useStyles();
+
         return () => {
-            return h(
-                <div>
-                    <h1>sjdkf</h1>
-                    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-                </div>
+            const classes = classesRef.value;
+            const code = toJson(schema);
+            
+            return (
+                <MonacoEditor 
+                    code={code}
+                    class={classes.editor}
+                    onChange={handleCodeChange}     
+                    title="Schema">
+                </MonacoEditor>
             );
         };
     }
