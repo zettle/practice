@@ -1,16 +1,13 @@
 import { defineComponent, PropType } from "vue";
-import { Schema, SchemaTypes } from './types';
+import { Schema, SchemaTypes, FiledPropsDefine } from './types';
 import NumberField from './fields/NumberField';
-import StringField from './fields/StringField';
+// import StringField from './fields/StringField';
+import StringField from './fields/StringField.vue';
 
 export default defineComponent({
     name: 'SchemaItems',
     components: {StringField},
-    props: {
-        schema: { type: Object as PropType<Schema>, required: true }, // schema码
-        value: { required: true }, // 表单项的value值
-        onChange: { type: Function as PropType<(v: any) => void>, required: true}, // 表单项value值改变事件
-    },
+    props: FiledPropsDefine,
     setup (props) {
         return () => {
             // 解析Schema

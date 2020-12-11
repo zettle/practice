@@ -36,7 +36,13 @@ export type PublicProps = VNodeProps &
 
 
 
-## json-schema
+## vue-script-setup提案
 
-安装ajv: `npm i -S ajv`
+[script-setup提案]()https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-script-setup.md
+
+目前vue已经支持，但是脚手架还不支持，这个项目运行的时候`@vue/cli 4.5.8`版本
+
+所以需要先执行`vue upgrade`
+
+更新下对应的依赖
 
