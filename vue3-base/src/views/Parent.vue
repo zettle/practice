@@ -9,8 +9,8 @@
 import { defineComponent, ref } from 'vue';
 import { providerStore } from '@/js/useCross';
 import Child from '@/components/Child.vue';
-import Child2 from '@/components/Child2.vue';
+// import Child2 from '@/components/Child2.vue';
 export default defineComponent({
-    components: { Child, Child2 }
+    components: { Child }
 });
 </script>

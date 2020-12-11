@@ -1,5 +1,5 @@
 <template>
-    <!-- <div id="nav">
+    <div id="nav">
         <router-link to="/">数据变化</router-link> |
         <router-link to="/about">生命周期</router-link> |
         <router-link to="/watch">watch监听</router-link> |
@@ -14,14 +14,16 @@
         <router-link to="/watchEffect">watchEffect</router-link> |
         <router-link to="/watchEffecttime">watchEffecttime</router-link> |
         <router-link to="/parent">provider/inject</router-link> |
+        <router-link to="/toRef">toRef</router-link> |
+        <router-link to="/toRefs">toRefs</router-link> |
         <router-link to="/getDom">getDom</router-link> |
         <router-link to="/react">react</router-link> |
         <router-link to="/shallowReactive">shallowReactive 和 shallowRef</router-link> |
         <router-link to="/toRows">toRaw</router-link> |
         <router-link to="/toRawsRef">ref的toRaw</router-link> |
         <router-link to="/markRaw">markRaw</router-link> |
-        <button @click="goPage('/demo/all')">跳到测试页</button>
-    </div> -->
+        <router-link to="/context">context</router-link> |
+    </div>
     <div class="view">
         <router-view v-slot="{ Component }">
             <transition name="slide-right">

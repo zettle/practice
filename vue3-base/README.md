@@ -495,7 +495,7 @@ setup() {
     onRenderTracked((event) => {
         console.log('onRenderTracked', event);
     });
-    onRenderTriggered(() => {
+    onRenderTriggered((event) => {
         console.log('onRenderTriggered', event);
     });
 }
@@ -1036,6 +1036,8 @@ const obj = observalbe({})
 ```
 
 
+<<<<<<< HEAD
+=======
 ## toRaw
 首先看个例子，代码位置: `/src/views/toRows.vue`
 ```vue
@@ -1107,4 +1109,5 @@ const update = () => {
 }
 ```
 从上面可以看出，一旦一个普通对象被 `markRaw()` 标记，那么即使后面声明 `ref/reactive` 去改变，也不会引起视图的更新
+>>>>>>> e2365ced7a7fd4aee129a96e9101182775f05118
 

@@ -18,28 +18,16 @@ const routes = [
     { path: '/watchEffect', component: () => import('../views/WatchEffect.vue') },
     { path: '/watchEffecttime', component: () => import('../views/WatchEffecttime.vue') },
     { path: '/parent', component: () => import('../views/Parent.vue') },
+    { path: '/toRef', component: () => import('../views/toRef.vue') },
+    { path: '/toRefs', component: () => import('../views/toRefs.vue') },
     { path: '/getDom', component: () => import('../views/getDom.vue') },
     { path: '/react', component: () => import('../views/React.vue') },
     { path: '/shallowReactive', component: () => import('../views/shallowReactive.vue') },
     { path: '/toRows', component: () => import('../views/toRows.vue') },
     { path: '/toRawsRef', component: () => import('../views/toRawsRef.vue') },
     { path: '/markRaw', component: () => import('../views/markRaw.vue') },
-    {
-        path: '/demo',
-        component: viewPage,
-        children: [
-            {
-                path: 'all',
-                component: () => import('../views/demo/all.vue'),
-                meta: { title: '按钮' }
-            },
-            {
-                path: 'button',
-                component: () => import('../views/demo/button.vue'),
-                meta: { title: '按钮' }
-            }
-        ]
-    }
+    { path: '/context', component: () => import('../views/context.vue') },
+    
 ]
 
 const router = createRouter({
