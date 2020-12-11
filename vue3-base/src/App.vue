@@ -1,5 +1,5 @@
 <template>
-    <div id="nav">
+    <!-- <div id="nav">
         <router-link to="/">数据变化</router-link> |
         <router-link to="/about">生命周期</router-link> |
         <router-link to="/watch">watch监听</router-link> |
@@ -20,12 +20,29 @@
         <router-link to="/toRows">toRaw</router-link> |
         <router-link to="/toRawsRef">ref的toRaw</router-link> |
         <router-link to="/markRaw">markRaw</router-link> |
-    </div>
+        <button @click="goPage('/demo/all')">跳到测试页</button>
+    </div> -->
     <div class="view">
-        <router-view />
+        <router-view v-slot="{ Component }">
+            <transition name="slide-right">
+                <component :is="Component" />
+            </transition>
+        </router-view>
     </div>
 </template>
-
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
+export default defineComponent({
+    setup() {
+        const router = useRouter();
+        const goPage = (url: string) => {
+            router.push(url);
+        };
+        return {goPage};
+    }
+})
+</script>
 <style lang="scss">
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -47,5 +64,22 @@
             color: #42b983;
         }
     }
+}
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.3s;
+    // transition: transform 40s;
+}
+
+.slide-left-enter-from,
+.slide-right-leave-active {
+    transform: translateX(-100%);
+}
+
+.slide-left-leave-active,
+.slide-right-enter-from {
+    transform: translateX(100%);
 }
 </style>

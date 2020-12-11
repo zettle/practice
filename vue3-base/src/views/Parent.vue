@@ -1,7 +1,7 @@
 <template>
     <div>
         <child2></child2>
-        <child></child>
+        <child class="mt-30" age="234"></child>
     </div>
 </template>
 

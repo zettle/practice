@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
+import viewPage from './viewPage.vue';
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
     { path: '/', component: Home },
     { path: '/about', component: () => import('../views/About.vue') },
     { path: '/about', component: () => import('../views/About.vue') },
@@ -23,6 +24,22 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/toRows', component: () => import('../views/toRows.vue') },
     { path: '/toRawsRef', component: () => import('../views/toRawsRef.vue') },
     { path: '/markRaw', component: () => import('../views/markRaw.vue') },
+    {
+        path: '/demo',
+        component: viewPage,
+        children: [
+            {
+                path: 'all',
+                component: () => import('../views/demo/all.vue'),
+                meta: { title: '按钮' }
+            },
+            {
+                path: 'button',
+                component: () => import('../views/demo/button.vue'),
+                meta: { title: '按钮' }
+            }
+        ]
+    }
 ]
 
 const router = createRouter({
