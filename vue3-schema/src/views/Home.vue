@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { defineComponent, provide, reactive } from 'vue';
+import Child001Plugin from '@/components/Child001';
 import Child001 from '@/components/Child001.vue'; // @ is an alias to /src
 import { providerKey } from '../hooks/HomeProvideKey';
 
@@ -14,6 +15,7 @@ export default defineComponent({
         Child001,
     },
     setup () {
+        Child001Plugin();
         const data = reactive({
             name: 'xiaoming'
         });

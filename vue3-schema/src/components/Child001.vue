@@ -9,7 +9,7 @@ import { defineComponent, inject, watchEffect } from "vue";
 import { providerKey } from '../hooks/HomeProvideKey';
 
 // props抽离出来成一个变量
-const propsJson = {
+export const propsJson = {
     msg: { type: String, required: true},
 } as const;
 
