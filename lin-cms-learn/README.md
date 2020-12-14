@@ -35,7 +35,9 @@ npm i
 
 4. 启动服务
 ```shell
+cd lin-cms-vue # 进入前端的服务
 
+npm run serve # 启动服务
 ```
 最终启动了 `` 服务，浏览器访问即可
 
@@ -68,7 +70,13 @@ module.exports = {
 
 
 3. 导入数据库
-在koa根目录有个 `/lin-cms-koa/schema.sql` sql文件，导入到上面创建的数据库里，最终生成下面的数据结构
+在koa根目录有个 `/lin-cms-koa/island.sql` 和 `/lin-cms-koa/schema.sql` sql文件
+
+* `schema.sql` 是 lin-cms的官方sql插件
+* `island.sql` 是 这个项目才用到的sql插件
+
+
+导入到上面创建的数据库里，最终生成下面的数据结构
 
 ![](./readme/mysql-import.png)
 
@@ -76,17 +84,32 @@ sql会创建 `root/123456` 的超级管理员账户
 
 4. 启动服务
 ```shell
-# 进入服务端目录
-cd lin-cms-koa
+cd lin-cms-koa # 进入服务端目录
 
-# 启动本地服务
-npm run start:dev
+npm run start:dev # 启动本地服务
 ```
 最终启动了 `http://localhost:5000` 服务
 
 ![](./readme/koa-start.png)
 
 再回到前端的页面，点击登录即可访问成功
+
+
+
+
+## 开发一个最简单的接口
+在 `/lin-cms-koa/app/api/v1/firstapi.js` 内容
+
+开发完后，会自动重启服务，然后用postman测试下接口 `http://localhost:5000/v1/first`
+
+已经可以正常访问
+
+![](./readme/postman-firstapi.png)
+
+
+
+## 后台接口参数校验
+lin-cms集成了方便的[接口参数校验器](https://doc.cms.talelin.com/server/koa/validator.html)
 
 
 
