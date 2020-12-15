@@ -61,3 +61,38 @@ const propsJson = {
 
 
 
+
+
+
+## 单元测试
+
+### 1、理解 `jest.config.js`
+从 `jest.config.js` 作为入口理解整个链路
+```js
+module.exports = {
+  // preset预设
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  transform: {
+    '^.+\\.vue$': 'vue-jest'
+  }
+}
+```
+
+再根据 `preset` 找到依赖的 `/node_module/@vue/cli-plugin-unit-jest/presets/typescript-and-babel/jest-preset.js` 
+```js
+const deepmerge = require('deepmerge')
+const defaultPreset = require('../default/jest-preset')
+
+module.exports = deepmerge(
+  defaultPreset,
+  {
+    moduleFileExtensions: ['ts', 'tsx'],
+    transform: {
+      '^.+\\.tsx?$': require.resolve('ts-jest')
+    }
+  }
+)
+
+```
+
+再找到依赖的  `/node_module/@vue/cli-plugin-unit-jest/presets/typescriptjest-preset.js`
