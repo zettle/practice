@@ -81,18 +81,19 @@ module.exports = {
 再根据 `preset` 找到依赖的 `/node_module/@vue/cli-plugin-unit-jest/presets/typescript-and-babel/jest-preset.js` 
 ```js
 const deepmerge = require('deepmerge')
-const defaultPreset = require('../default/jest-preset')
+const defaultTsPreset = require('../typescript/jest-preset')
 
 module.exports = deepmerge(
-  defaultPreset,
+  defaultTsPreset,
   {
-    moduleFileExtensions: ['ts', 'tsx'],
-    transform: {
-      '^.+\\.tsx?$': require.resolve('ts-jest')
+    globals: {
+      // ts-jest ts
+      'ts-jest': {
+        babelConfig: true
+      }
     }
   }
 )
-
 ```
 
 再找到依赖的  `/node_module/@vue/cli-plugin-unit-jest/presets/typescriptjest-preset.js`
