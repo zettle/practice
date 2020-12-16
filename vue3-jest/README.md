@@ -94,3 +94,95 @@ module.exports = {
   ]
 }
 ```
+
+
+
+## 2、Jest单元测试的几个内容
+* `describe`
+* `it`
+* `test` 和 `describe` 一样，一般用来写小小的测试玩下
+* 断言 
+
+执行完 `npm run test:unit` 后，我们看到下面的结果，就是反应了 describe 和 it 的数量
+
+![](./readme/test-result.png)
+
+
+## beforeEach/afterEach/beforeAll/afterAll的作用范围
+如果写在 `describe` 外面，那么作用是所有的it测试，如果卸载  `describe` 里面，那么作用是当前的 `describe` 范围
+
+
+
+## 2、在单元测试中如何写异步测试
+在vue组件中，很多异步操作，比如修改了props的值，需要等到DOM真正更新之后，我们才能获取最新的DOM的值去比较，在vue中，提供了 `nextTick()` 给我们用
+
+而在单元测试中，也到处有这种异步测试的场景
+
+在jest中，如果不特殊处理异步，是不会去检查的，比如下面
+```js
+it('修改props异步操作', () => {
+  const msg = 'new message'
+  const wrapper = shallowMount(HelloWorld, {
+    props: { msg }
+  });
+  wrapper.setProps({msg: 'xiaoming'});
+  expect(wrapper.text()).toMatch('xiaoming')
+})
+```
+执行命令之后，发现提示
+
+![](./readme/sync-match.png)
+
+从结果上看，jest拿的还是上一次的 `msg=new message` 的DOM数据去对比，而没有等到渲染完用最新的DOM内容去对比
+
+针对这种异步操作，我们需要用 `async/await` 去处理
+```js
+it('修改props异步操作', async () => {
+  const msg = 'new message'
+  const wrapper = shallowMount(HelloWorld, {
+    props: { msg }
+  });
+  await wrapper.setProps({msg: 'xiaoming'});
+  expect(wrapper.text()).toMatch('xiaoming')
+})
+```
+
+除了常用 `async/await` 来处理异步外，还经常用 Promise 或者 done 参数
+
+比如下面场景，3s后才执行断言
+```js
+it('3s后执行断言', () => {
+  setTimeout(() => {
+    expect(1).toMatch('xiaoming');
+  }, 3000);
+})
+```
+上面断言正常是不通过的，但是在时机中就通过了，那是因为jest本身执行完it里面代码，发现没有异常就认为通过，不会等到3s后再看结果。
+
+我们可以用done参数来处理下
+```js
+it('3s后执行断言', (done) => {
+  setTimeout(() => {
+    expect('aaa').toMatch('xiaoming');
+    done(); // 明确告诉jest要执行完这里才算结束
+  }, 3000);
+})
+```
+
+也可以用 Promise 来处理
+```js
+it('3s后执行断言', () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      expect('aaa').toMatch('aaa');
+      resolve(); // 明确告诉jest等到这里才结束
+    }, 3000);
+  });
+})
+```
+
+总体上就是这3种处理异步的方式
+* done
+* promise
+* async/await
+
