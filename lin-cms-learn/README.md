@@ -98,7 +98,23 @@ npm run start:dev # 启动本地服务
 
 
 ## 开发一个最简单的接口
-在 `/lin-cms-koa/app/api/v1/firstapi.js` 内容
+在 `/lin-cms-koa/app/api/v1/firstapi.js` 内容如下:
+```js
+import { LinRouter } from 'lin-mizar';
+
+const firstApi = new LinRouter({
+  prefix: '/v1/first'
+});
+
+firstApi.post('/', async ctx => {
+  return ctx.json({
+    code: 0,
+    msg: 'this is sucess'
+  });
+});
+
+module.exports = { firstApi };
+```
 
 开发完后，会自动重启服务，然后用postman测试下接口 `http://localhost:5000/v1/first`
 
@@ -111,5 +127,6 @@ npm run start:dev # 启动本地服务
 ## 后台接口参数校验
 lin-cms集成了方便的[接口参数校验器](https://doc.cms.talelin.com/server/koa/validator.html)
 
+新建 `/lin-cms-koa/app/validators/firstapi.js`， 代码见里面
 
 
