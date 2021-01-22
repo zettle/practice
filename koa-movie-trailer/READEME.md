@@ -21,5 +21,13 @@
 
 
 
+## 爬虫: puppeter
+* [puppeter地址](https://github.com/puppeteer/puppeteer)
+* [puppeter中文网](https://zhaoqize.github.io/puppeteer-api-zh_CN/)
+* [各种国内镜像](https://www.npmjs.com/package/mirror-config-china)
+
+遇到被墙的问题，先按照上面配置下[国内镜像](https://www.npmjs.com/package/mirror-config-china)
+
+对node版本有要求，目前 `14.14.0` 可以，`10.15.1`不行
 
 
