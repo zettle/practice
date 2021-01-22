@@ -23,14 +23,15 @@ export default defineComponent({
     // 返回true 表示符合要求才会真正的emit出去
     // 如果不想要做校验，则设置为null就会一直通过
     emits: {
-        // close: (playload: any) => {
-        //     return playload.type === 'close';
-        // }
-        close: null
+        close: (playload: any) => {
+            console.log('=====', playload.type === 'close');
+            return playload.type === 'close';
+        }
+        // close: null
     },
     setup(props, context) {
         const close = () => {
-            context.emit('close', {type: 'close'});
+            context.emit('close', {type: 'sdfsd'});
         }
         return {close};
     }

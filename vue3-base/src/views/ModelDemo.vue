@@ -21,6 +21,7 @@ export default defineComponent({
             isShow.value = true;
         }
         const closeDialog = () => {
+            console.log('close======fn');
             isShow.value = false;
         }
 
