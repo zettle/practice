@@ -29,7 +29,7 @@ export default connect(
     //         num: state.myCount
     //     };
     // },
-    // store的dispatch这里的返回值将作为props传递`<Count>`组件
+    // // store的dispatch这里的返回值将作为props传递`<Count>`组件
     // (dispatch) => {
     //     return {
     //         jia: (data) => dispatch(createAddAction(data))
@@ -44,6 +44,6 @@ export default connect(
     }),
     // 既可以用上面的函数写法，可以写成这种json写法
     {
-        jia: (data) => createAddAction(data)
+        jia: (data) => createAddAction(data) // redux发现这里是一个action，就会自动去派发
     }
 )(Count);

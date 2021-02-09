@@ -7,3 +7,6 @@
 
 建议使用的时候，3个库都要安装: `npm i redux redux-thunk react-redux`
 
+
+1. 组件`<Calculator />`的计算结果存在redux中，点击按钮的时候，派发一个同步action改变redux的数据
+2. 组件`<Person />`的列表存在redux中，点击按钮的时候，派发一个异步action改变list数据
