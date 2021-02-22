@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<script>
+console.log('============== shallowReactive ==================');
+// 封装一个shallowReactive
+function shallowReactive (obj) {
+    return new Proxy(obj, {
+        get (obj, key) {
+            console.log('get', key);
+            return obj[key];
+        },
+        set (obj, key, newVal) {
+            console.log('set', key);
+            obj[key] = newVal;
+            console.log('更新html');// vue在这里更新html
+            return true;
+        }
+    });
+}
+const state = shallowReactive({
+    name: '小明',
+    a: {
+        b: {
+            c: 1
+        }
+    }
+});
+state.name = '小红'; // 触发set
+state.a.b.c = 3; // 不会触发set,就不会html更新
+state.a.b = 4; // 不会触发set,就不会html更新
+
+console.log('============== shallowRef ==================');
+
+// 封装一个shallowRef
+function shallowRef (value) {
+    return shallowReactive({value});
+}
+const state2 = shallowRef({
+    name: '小明',
+    a: {
+        b: {
+            c: 1
+        }
+    }
+});
+state2.value.a.b = 3;
+state2.value = 1;
+
+console.log('============== reactive ==================');
+
+// 封装一个reactive
+function reactive(obj) {
+    if (typeof obj !== 'object') {
+        console.log('传递进来的不是一个object类型');
+        return false;
+    }
+    // obj是一个数组，那么就遍历数组，看每个原始是否为对象
+    // 比如 obj=[{name:'小明'}, {name:'小红'}] 这种情况
+    if (Array.isArray(obj)) {
+        obj.forEach((item, index) => {
+            if (typeof item === 'object') {
+                obj[index] = reactive(item); // 重新赋值给原来的位置
+            }
+        });
+    } else {
+        // obj是一个JSON对象的情况，就需要看每个属性的value是否为一个对象
+        for (const [key, value] of Object.entries(obj)) {
+            if (typeof value === 'object') {
+                obj[key] = reactive(value);
+            }
+        }
+    }
+    return shallowReactive(obj);
+}
+
+const state3 = reactive([{name:'小明'}, {a: {b: {c: 1}}}]);
+state3[0].name = '小红'; // 触发set，更新html
+state3[1].a.b.c = 1; // 触发set，更新html
+
+const state4 = reactive({a: {b: {c:1}}});
+state4.a.b.c = 12; // 触发set，更新html
+
+console.log('=============== ref =================');
+
+// 封装一个ref
+function ref (value) {
+    return reactive({value});
+}
+const state5 = ref({a: {b: {c: 1}}});
+state5.value.a.b.c = 12;
+
+
+console.log('=============== shallowReadonly =================');
+
+function shallowReadonly(obj) {
+    return new Proxy(obj, {
+        get (obj, key) {
+            console.log('get', key);
+            return obj[key];
+        },
+        set (obj, key, newVal) {
+            console.log('set', key);
+            // 去掉这2句并给下warn警告
+            // obj[key] = newVal; 
+            // console.log('更新html');
+            console.warn(`${key}属性为只读`);
+            return true;
+        }
+    });
+}
+const state6 = shallowReadonly({a: {b: {c:1}}});
+state6.a = 12;// js不会变，html不会更新
+state6.a.b.c = 111; // js会变，html不会更新
+
+console.log('=============== reactive + shallowReadonly =================');
+const state7 = reactive({a: {b: {c:1}}});
+const state8 = shallowReadonly(state7);
+state8.a = 12;// 异常，只读
+state8.a.b.c = 111; // js会变，html也会更新
+</script>
+</body>
+</html>
